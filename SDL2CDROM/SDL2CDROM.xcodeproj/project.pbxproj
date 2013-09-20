@@ -1,0 +1,472 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		555776EF17EC14650019D008 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 555776EE17EC14650019D008 /* Cocoa.framework */; };
+		555776F917EC14650019D008 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 555776F717EC14650019D008 /* InfoPlist.strings */; };
+		5557771A17EC14DD0019D008 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5557771917EC14DD0019D008 /* SDL2.framework */; };
+		5557771C17EC154F0019D008 /* SDL_cdrom.h in Headers */ = {isa = PBXBuildFile; fileRef = 5557771B17EC154F0019D008 /* SDL_cdrom.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5557774717EC15A90019D008 /* SDL_cdrom.c in Sources */ = {isa = PBXBuildFile; fileRef = 5557774317EC15920019D008 /* SDL_cdrom.c */; };
+		5557774817EC15AD0019D008 /* SDL_syscdrom.h in Headers */ = {isa = PBXBuildFile; fileRef = 5557774417EC15920019D008 /* SDL_syscdrom.h */; };
+		5557774917EC15B60019D008 /* AudioFilePlayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 5557773017EC15920019D008 /* AudioFilePlayer.c */; };
+		5557774A17EC15B60019D008 /* AudioFilePlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5557773117EC15920019D008 /* AudioFilePlayer.h */; };
+		5557774B17EC15B60019D008 /* AudioFileReaderThread.c in Sources */ = {isa = PBXBuildFile; fileRef = 5557773217EC15920019D008 /* AudioFileReaderThread.c */; };
+		5557774C17EC15B60019D008 /* CDPlayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 5557773317EC15920019D008 /* CDPlayer.c */; };
+		5557774D17EC15B60019D008 /* CDPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5557773417EC15920019D008 /* CDPlayer.h */; };
+		5557774E17EC15B60019D008 /* SDL_syscdrom.c in Sources */ = {isa = PBXBuildFile; fileRef = 5557773517EC15920019D008 /* SDL_syscdrom.c */; };
+		5557774F17EC15B60019D008 /* SDL_syscdrom_c.h in Headers */ = {isa = PBXBuildFile; fileRef = 5557773617EC15920019D008 /* SDL_syscdrom_c.h */; };
+		5557775017EC15B60019D008 /* SDLOSXCAGuard.c in Sources */ = {isa = PBXBuildFile; fileRef = 5557773717EC15920019D008 /* SDLOSXCAGuard.c */; };
+		5557775117EC15B60019D008 /* SDLOSXCAGuard.h in Headers */ = {isa = PBXBuildFile; fileRef = 5557773817EC15920019D008 /* SDLOSXCAGuard.h */; };
+		5557775317EC17830019D008 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5557775217EC17830019D008 /* AudioUnit.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		555776EB17EC14650019D008 /* SDL2CDROM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SDL2CDROM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		555776EE17EC14650019D008 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		555776F117EC14650019D008 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		555776F217EC14650019D008 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		555776F317EC14650019D008 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		555776F617EC14650019D008 /* SDL2CDROM-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SDL2CDROM-Info.plist"; sourceTree = "<group>"; };
+		555776F817EC14650019D008 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		555776FA17EC14650019D008 /* SDL2CDROM-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SDL2CDROM-Prefix.pch"; sourceTree = "<group>"; };
+		5557770317EC14650019D008 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		5557771917EC14DD0019D008 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
+		5557771B17EC154F0019D008 /* SDL_cdrom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_cdrom.h; sourceTree = "<group>"; };
+		5557772117EC15920019D008 /* SDL_syscdrom.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SDL_syscdrom.cc; sourceTree = "<group>"; };
+		5557772317EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; };
+		5557772517EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; };
+		5557772717EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; };
+		5557772917EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; };
+		5557772B17EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; };
+		5557773017EC15920019D008 /* AudioFilePlayer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = AudioFilePlayer.c; sourceTree = "<group>"; };
+		5557773117EC15920019D008 /* AudioFilePlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioFilePlayer.h; sourceTree = "<group>"; };
+		5557773217EC15920019D008 /* AudioFileReaderThread.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = AudioFileReaderThread.c; sourceTree = "<group>"; };
+		5557773317EC15920019D008 /* CDPlayer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = CDPlayer.c; sourceTree = "<group>"; };
+		5557773417EC15920019D008 /* CDPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CDPlayer.h; sourceTree = "<group>"; };
+		5557773517EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; };
+		5557773617EC15920019D008 /* SDL_syscdrom_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDL_syscdrom_c.h; sourceTree = "<group>"; };
+		5557773717EC15920019D008 /* SDLOSXCAGuard.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDLOSXCAGuard.c; sourceTree = "<group>"; };
+		5557773817EC15920019D008 /* SDLOSXCAGuard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDLOSXCAGuard.h; sourceTree = "<group>"; };
+		5557773C17EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; };
+		5557774317EC15920019D008 /* SDL_cdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_cdrom.c; sourceTree = "<group>"; };
+		5557774417EC15920019D008 /* SDL_syscdrom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDL_syscdrom.h; sourceTree = "<group>"; };
+		5557774617EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; };
+		5557775217EC17830019D008 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		555776E717EC14650019D008 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5557775317EC17830019D008 /* AudioUnit.framework in Frameworks */,
+				5557771A17EC14DD0019D008 /* SDL2.framework in Frameworks */,
+				555776EF17EC14650019D008 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		555776E117EC14650019D008 = {
+			isa = PBXGroup;
+			children = (
+				555776F417EC14650019D008 /* SDL2CDROM */,
+				555776ED17EC14650019D008 /* Frameworks */,
+				555776EC17EC14650019D008 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		555776EC17EC14650019D008 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				555776EB17EC14650019D008 /* SDL2CDROM.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		555776ED17EC14650019D008 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5557775217EC17830019D008 /* AudioUnit.framework */,
+				5557771917EC14DD0019D008 /* SDL2.framework */,
+				555776EE17EC14650019D008 /* Cocoa.framework */,
+				5557770317EC14650019D008 /* XCTest.framework */,
+				555776F017EC14650019D008 /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		555776F017EC14650019D008 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				555776F117EC14650019D008 /* Foundation.framework */,
+				555776F217EC14650019D008 /* CoreData.framework */,
+				555776F317EC14650019D008 /* AppKit.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		555776F417EC14650019D008 /* SDL2CDROM */ = {
+			isa = PBXGroup;
+			children = (
+				5557771B17EC154F0019D008 /* SDL_cdrom.h */,
+				5557771D17EC15920019D008 /* cdrom */,
+				555776F517EC14650019D008 /* Supporting Files */,
+			);
+			path = SDL2CDROM;
+			sourceTree = "<group>";
+		};
+		555776F517EC14650019D008 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				555776F617EC14650019D008 /* SDL2CDROM-Info.plist */,
+				555776F717EC14650019D008 /* InfoPlist.strings */,
+				555776FA17EC14650019D008 /* SDL2CDROM-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		5557771D17EC15920019D008 /* cdrom */ = {
+			isa = PBXGroup;
+			children = (
+				5557772017EC15920019D008 /* beos */,
+				5557772217EC15920019D008 /* bsdi */,
+				5557772417EC15920019D008 /* dc */,
+				5557772617EC15920019D008 /* dummy */,
+				5557772817EC15920019D008 /* freebsd */,
+				5557772A17EC15920019D008 /* linux */,
+				5557772F17EC15920019D008 /* macosx */,
+				5557773B17EC15920019D008 /* openbsd */,
+				5557774317EC15920019D008 /* SDL_cdrom.c */,
+				5557774417EC15920019D008 /* SDL_syscdrom.h */,
+				5557774517EC15920019D008 /* win32 */,
+			);
+			path = cdrom;
+			sourceTree = "<group>";
+		};
+		5557772017EC15920019D008 /* beos */ = {
+			isa = PBXGroup;
+			children = (
+				5557772117EC15920019D008 /* SDL_syscdrom.cc */,
+			);
+			path = beos;
+			sourceTree = "<group>";
+		};
+		5557772217EC15920019D008 /* bsdi */ = {
+			isa = PBXGroup;
+			children = (
+				5557772317EC15920019D008 /* SDL_syscdrom.c */,
+			);
+			path = bsdi;
+			sourceTree = "<group>";
+		};
+		5557772417EC15920019D008 /* dc */ = {
+			isa = PBXGroup;
+			children = (
+				5557772517EC15920019D008 /* SDL_syscdrom.c */,
+			);
+			path = dc;
+			sourceTree = "<group>";
+		};
+		5557772617EC15920019D008 /* dummy */ = {
+			isa = PBXGroup;
+			children = (
+				5557772717EC15920019D008 /* SDL_syscdrom.c */,
+			);
+			path = dummy;
+			sourceTree = "<group>";
+		};
+		5557772817EC15920019D008 /* freebsd */ = {
+			isa = PBXGroup;
+			children = (
+				5557772917EC15920019D008 /* SDL_syscdrom.c */,
+			);
+			path = freebsd;
+			sourceTree = "<group>";
+		};
+		5557772A17EC15920019D008 /* linux */ = {
+			isa = PBXGroup;
+			children = (
+				5557772B17EC15920019D008 /* SDL_syscdrom.c */,
+			);
+			path = linux;
+			sourceTree = "<group>";
+		};
+		5557772F17EC15920019D008 /* macosx */ = {
+			isa = PBXGroup;
+			children = (
+				5557773017EC15920019D008 /* AudioFilePlayer.c */,
+				5557773117EC15920019D008 /* AudioFilePlayer.h */,
+				5557773217EC15920019D008 /* AudioFileReaderThread.c */,
+				5557773317EC15920019D008 /* CDPlayer.c */,
+				5557773417EC15920019D008 /* CDPlayer.h */,
+				5557773517EC15920019D008 /* SDL_syscdrom.c */,
+				5557773617EC15920019D008 /* SDL_syscdrom_c.h */,
+				5557773717EC15920019D008 /* SDLOSXCAGuard.c */,
+				5557773817EC15920019D008 /* SDLOSXCAGuard.h */,
+			);
+			path = macosx;
+			sourceTree = "<group>";
+		};
+		5557773B17EC15920019D008 /* openbsd */ = {
+			isa = PBXGroup;
+			children = (
+				5557773C17EC15920019D008 /* SDL_syscdrom.c */,
+			);
+			path = openbsd;
+			sourceTree = "<group>";
+		};
+		5557774517EC15920019D008 /* win32 */ = {
+			isa = PBXGroup;
+			children = (
+				5557774617EC15920019D008 /* SDL_syscdrom.c */,
+			);
+			path = win32;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		555776E817EC14650019D008 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5557774D17EC15B60019D008 /* CDPlayer.h in Headers */,
+				5557775117EC15B60019D008 /* SDLOSXCAGuard.h in Headers */,
+				5557774817EC15AD0019D008 /* SDL_syscdrom.h in Headers */,
+				5557774F17EC15B60019D008 /* SDL_syscdrom_c.h in Headers */,
+				5557771C17EC154F0019D008 /* SDL_cdrom.h in Headers */,
+				5557774A17EC15B60019D008 /* AudioFilePlayer.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		555776EA17EC14650019D008 /* SDL2CDROM */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5557771317EC14650019D008 /* Build configuration list for PBXNativeTarget "SDL2CDROM" */;
+			buildPhases = (
+				555776E617EC14650019D008 /* Sources */,
+				555776E717EC14650019D008 /* Frameworks */,
+				555776E817EC14650019D008 /* Headers */,
+				555776E917EC14650019D008 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SDL2CDROM;
+			productName = SDL2CDROM;
+			productReference = 555776EB17EC14650019D008 /* SDL2CDROM.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		555776E217EC14650019D008 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0500;
+				ORGANIZATIONNAME = "C.W. Betts";
+			};
+			buildConfigurationList = 555776E517EC14650019D008 /* Build configuration list for PBXProject "SDL2CDROM" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 555776E117EC14650019D008;
+			productRefGroup = 555776EC17EC14650019D008 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				555776EA17EC14650019D008 /* SDL2CDROM */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		555776E917EC14650019D008 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				555776F917EC14650019D008 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		555776E617EC14650019D008 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5557774B17EC15B60019D008 /* AudioFileReaderThread.c in Sources */,
+				5557774E17EC15B60019D008 /* SDL_syscdrom.c in Sources */,
+				5557774717EC15A90019D008 /* SDL_cdrom.c in Sources */,
+				5557774917EC15B60019D008 /* AudioFilePlayer.c in Sources */,
+				5557775017EC15B60019D008 /* SDLOSXCAGuard.c in Sources */,
+				5557774C17EC15B60019D008 /* CDPlayer.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		555776F717EC14650019D008 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				555776F817EC14650019D008 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		5557771117EC14650019D008 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		5557771217EC14650019D008 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		5557771417EC14650019D008 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
+				FRAMEWORK_VERSION = A;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SDL2CDROM/SDL2CDROM-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(LOCAL_LIBRARY_DIR)/Frameworks/SDL2.framework/Headers",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "SDL2CDROM/SDL2CDROM-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Debug;
+		};
+		5557771517EC14650019D008 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
+				FRAMEWORK_VERSION = A;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SDL2CDROM/SDL2CDROM-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(LOCAL_LIBRARY_DIR)/Frameworks/SDL2.framework/Headers",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "SDL2CDROM/SDL2CDROM-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		555776E517EC14650019D008 /* Build configuration list for PBXProject "SDL2CDROM" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5557771117EC14650019D008 /* Debug */,
+				5557771217EC14650019D008 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5557771317EC14650019D008 /* Build configuration list for PBXNativeTarget "SDL2CDROM" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5557771417EC14650019D008 /* Debug */,
+				5557771517EC14650019D008 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 555776E217EC14650019D008 /* Project object */;
+}
