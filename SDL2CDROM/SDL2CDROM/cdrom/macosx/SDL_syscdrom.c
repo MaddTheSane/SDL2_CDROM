@@ -263,34 +263,20 @@ void SDL_SYS_CDQuit(void)
 /* Get the Unix disk name of the volume */
 static const char *SDL_SYS_CDName (int drive)
 {
-    /*
-     * !!! FIXME: PBHGetVolParmsSync() is gone in 10.6,
-     * !!! FIXME:  replaced with FSGetVolumeParms(), which
-     * !!! FIXME:  isn't available before 10.5.  :/
-     */
-    return "Mac OS X CD-ROM Device";
-
-#if 0
-    OSStatus     err = noErr;
-    HParamBlockRec  pb;
-    GetVolParmsInfoBuffer   volParmsInfo;
-   
+    OSStatus                err;
+    GetVolParmsInfoBuffer   volParmsInfo = {0};
+    
     if (fakeCD)
         return "Fake CD-ROM Device";
-
-    pb.ioParam.ioNamePtr = NULL;
-    pb.ioParam.ioVRefNum = volumes[drive];
-    pb.ioParam.ioBuffer = (Ptr)&volParmsInfo;
-    pb.ioParam.ioReqCount = (SInt32)sizeof(volParmsInfo);
-    err = PBHGetVolParmsSync(&pb);
-
+    
+    err = FSGetVolumeParms(volumes[drive], &volParmsInfo, sizeof(volParmsInfo));
+    
     if (err != noErr) {
         SDL_SetError ("PBHGetVolParmsSync returned %d", err);
         return NULL;
     }
-
+    
     return volParmsInfo.vMDeviceID;
-#endif
 }
 
 /* Open the "device" */
@@ -303,7 +289,7 @@ static int SDL_SYS_CDOpen (int drive)
     }
     else
         currentDrive = drive;
-
+    
     return drive;
 }
 
@@ -319,7 +305,6 @@ static int SDL_SYS_CDGetTOC (SDL_CD *cdrom)
         cdrom->numtracks = cacheTOCNumTracks;
         return 0;
     }
-    
     
     ReadTOCData (volumes[cdrom->id], cdrom);
     didReadTOC = SDL_TRUE;
@@ -337,7 +322,7 @@ static CDstatus SDL_SYS_CDStatus (SDL_CD *cdrom, int *position)
         Lock ();
         trackFrame = GetCurrentFrame ();
         Unlock ();
-    
+        
         *position = cdrom->track[currentTrack].offset + trackFrame;
     }
     
@@ -362,7 +347,7 @@ static int SDL_SYS_CDPlay(SDL_CD *cdrom, int start, int length)
     
     if (PauseFile () < 0)
         return -3;
-        
+    
     if (ReleaseFile () < 0)
         return -4;
     

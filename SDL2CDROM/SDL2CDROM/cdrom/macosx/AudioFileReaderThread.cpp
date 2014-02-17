@@ -301,14 +301,14 @@ void    FileReaderThread::ReadNextChunk()
             continue;
         }
             /* construct pointer */
-        char* writePtr = (char *) (theItem->GetFileBuffer(theItem) +
+        char* writePtr = (char *) (theItem->GetFileBuffer() +
                                 (theItem->mWriteToFirstBuffer ? 0 : theItem->mChunkSize));
     
             /* read data */
-        result = theItem->Read(theItem, writePtr, &dataChunkSize);
+        result = theItem->Read(writePtr, &dataChunkSize);
         if (result != noErr && result != eofErr) {
-            AudioFilePlayer *afp = (AudioFilePlayer *) theItem->GetParent(theItem);
-            afp->DoNotification(afp, result);
+            AudioFilePlayer *afp = (AudioFilePlayer *) theItem->GetParent();
+            afp->DoNotification(result);
             continue;
         }
         
@@ -339,7 +339,7 @@ void delete_FileReaderThread(FileReaderThread *frt)
 
 FileReaderThread::~FileReaderThread()
 {
-        delete_SDLOSXCAGuard(mGuard);
+    delete_SDLOSXCAGuard(mGuard);
 }
 
 FileReaderThread *new_FileReaderThread ()
@@ -362,158 +362,156 @@ FileReaderThread::FileReaderThread()
 static FileReaderThread *sReaderThread;
 
 
-static int    AudioFileManager_DoConnect (AudioFileManager *afm)
+int AudioFileManager::DoConnect()
 {
-    if (!afm->mIsEngaged)
+    if (!mIsEngaged)
     {
         OSStatus result;
 
         /*afm->mReadFilePosition = 0;*/
-        afm->mFinishedReadingData = 0;
+        mFinishedReadingData = 0;
 
-        afm->mNumTimesAskedSinceFinished = 0;
-        afm->mLockUnsuccessful = 0;
+        mNumTimesAskedSinceFinished = 0;
+        mLockUnsuccessful = 0;
         
         ByteCount dataChunkSize;
         
-        if ((afm->mFileLength - afm->mReadFilePosition) < afm->mChunkSize)
-            dataChunkSize = afm->mFileLength - afm->mReadFilePosition;
+        if ((mFileLength - mReadFilePosition) < mChunkSize)
+            dataChunkSize = mFileLength - mReadFilePosition;
         else
-            dataChunkSize = afm->mChunkSize;
+            dataChunkSize = mChunkSize;
         
-        result = afm->Read(afm, afm->mFileBuffer, &dataChunkSize);
-           if (result) return 0; /*THROW_RESULT("AudioFileManager::DoConnect(): Read")*/
+        result = Read(mFileBuffer, &dataChunkSize);
+        if (result) THROW_RESULT("AudioFileManager::DoConnect(): Read");
 
-        afm->mReadFilePosition += dataChunkSize;
+        mReadFilePosition += dataChunkSize;
                 
-        afm->mWriteToFirstBuffer = 0;
-        afm->mReadFromFirstBuffer = 1;
+        mWriteToFirstBuffer = 0;
+        mReadFromFirstBuffer = 1;
 
         sReaderThread->AddReader();
         
-        afm->mIsEngaged = 1;
-    }
-    /*
-    else
-        throw static_cast<OSStatus>(-1); */ /* thread has already been started */
+        mIsEngaged = 1;
+    } else
+        throw static_cast<OSStatus>(-1); /* thread has already been started */
 
     return 1;
 }
 
-static void    AudioFileManager_Disconnect (AudioFileManager *afm)
+void AudioFileManager::Disconnect()
 {
-    if (afm->mIsEngaged)
+    if (mIsEngaged)
     {
-        sReaderThread->RemoveReader (afm);
-        afm->mIsEngaged = 0;
+        sReaderThread->RemoveReader(this);
+        mIsEngaged = 0;
     }
 }
 
-static OSStatus AudioFileManager_Read(AudioFileManager *afm, char *buffer, ByteCount *len)
+OSStatus AudioFileManager::Read(char *buffer, ByteCount *len)
 {
-    return FSReadFork(afm->mForkRefNum,
+    return FSReadFork(mForkRefNum,
                       fsFromStart,
-                      afm->mReadFilePosition + afm->mAudioDataOffset,
+                      mReadFilePosition + mAudioDataOffset,
                       *len,
                       buffer,
                       len);
 }
 
-static OSStatus AudioFileManager_GetFileData (AudioFileManager *afm, void** inOutData, UInt32 *inOutDataSize)
+OSStatus AudioFileManager::GetFileData(void** inOutData, UInt32 *inOutDataSize)
 {
-    if (afm->mFinishedReadingData)
+    if (mFinishedReadingData)
     {
-        ++afm->mNumTimesAskedSinceFinished;
+        ++mNumTimesAskedSinceFinished;
         *inOutDataSize = 0;
         *inOutData = 0;
         return noErr;
     }
     
-    if (afm->mReadFromFirstBuffer == afm->mWriteToFirstBuffer) {
+    if (mReadFromFirstBuffer == mWriteToFirstBuffer) {
         #if DEBUG
         printf ("* * * * * * * Can't keep up with reading file\n");
         #endif
         
-        afm->mParent->DoNotification (afm->mParent, kAudioFilePlayErr_FilePlayUnderrun);
+        mParent->DoNotification(kAudioFilePlayErr_FilePlayUnderrun);
         *inOutDataSize = 0;
         *inOutData = 0;
     } else {
-        *inOutDataSize = afm->mChunkSize;
-        *inOutData = afm->mReadFromFirstBuffer ? afm->mFileBuffer : (afm->mFileBuffer + afm->mChunkSize);
+        *inOutDataSize = mChunkSize;
+        *inOutData = mReadFromFirstBuffer ? mFileBuffer : (mFileBuffer + mChunkSize);
     }
 
-    afm->mLockUnsuccessful = !sReaderThread->TryNextRead (afm);
+    mLockUnsuccessful = !sReaderThread->TryNextRead(this);
     
-    afm->mReadFromFirstBuffer = !afm->mReadFromFirstBuffer;
+    mReadFromFirstBuffer = !mReadFromFirstBuffer;
 
     return noErr;
 }
 
-static void    AudioFileManager_AfterRender (AudioFileManager *afm)
+void AudioFileManager::AfterRender()
 {
-    if (afm->mNumTimesAskedSinceFinished > 0)
+    if (mNumTimesAskedSinceFinished > 0)
     {
         int didLock = 0;
         SDLOSXCAGuard *guard = sReaderThread->GetGuard();
         if (guard->Try(guard, &didLock)) {
-            afm->mParent->DoNotification (afm->mParent, kAudioFilePlay_FileIsFinished);
+            mParent->DoNotification(kAudioFilePlay_FileIsFinished);
             if (didLock)
                 guard->Unlock(guard);
         }
     }
 
-    if (afm->mLockUnsuccessful)
-        afm->mLockUnsuccessful = !sReaderThread->TryNextRead(afm);
+    if (mLockUnsuccessful)
+        mLockUnsuccessful = !sReaderThread->TryNextRead(this);
 }
 
-static void    AudioFileManager_SetPosition (AudioFileManager *afm, SInt64 pos)
+void AudioFileManager::SetPosition(SInt64 pos)
 {
-    if (pos < 0 || pos >= afm->mFileLength) {
+    if (pos < 0 || pos >= mFileLength) {
         SDL_SetError ("AudioFileManager::SetPosition - position invalid: %d filelen=%d\n", 
-            (unsigned int)pos, (unsigned int)afm->mFileLength);
+            (unsigned int)pos, (unsigned int)mFileLength);
         pos = 0;
     }
         
-    afm->mReadFilePosition = pos;
+    mReadFilePosition = pos;
 }
     
-static void    AudioFileManager_SetEndOfFile (AudioFileManager *afm, SInt64 pos)
+void AudioFileManager::SetEndOfFile(SInt64 pos)
 {
-    if (pos <= 0 || pos > afm->mFileLength) {
+    if (pos <= 0 || pos > mFileLength) {
         SDL_SetError ("AudioFileManager::SetEndOfFile - position beyond actual eof\n");
-        pos = afm->mFileLength;
+        pos = mFileLength;
     }
     
-    afm->mFileLength = pos;
+    mFileLength = pos;
 }
 
-static const char *AudioFileManager_GetFileBuffer(AudioFileManager *afm)
+const char *AudioFileManager::GetFileBuffer()
 {
-    return afm->mFileBuffer;
+    return mFileBuffer;
 }
 
-const AudioFilePlayer *AudioFileManager_GetParent(AudioFileManager *afm)
+const AudioFilePlayer *AudioFileManager::GetParent()
 {
-    return afm->mParent;
+    return mParent;
 }
 
-static int AudioFileManager_GetByteCounter(AudioFileManager *afm)
+int AudioFileManager::GetByteCounter()
 {
-    return afm->mByteCounter;
+    return mByteCounter;
 }
 
-static OSStatus AudioFileManager_FileInputProc (void                            *inRefCon,
-                                                AudioUnitRenderActionFlags      *ioActionFlags,
-                                                const AudioTimeStamp            *inTimeStamp,
-                                                UInt32                          inBusNumber,
-                                                UInt32                          inNumberFrames,
-                                                AudioBufferList                 *ioData)
+OSStatus AudioFileManager::FileInputProc (void                            *inRefCon,
+                                          AudioUnitRenderActionFlags      *ioActionFlags,
+                                          const AudioTimeStamp            *inTimeStamp,
+                                          UInt32                          inBusNumber,
+                                          UInt32                          inNumberFrames,
+                                          AudioBufferList                 *ioData)
 {
     AudioFileManager* afm = (AudioFileManager*)inRefCon;
-    return afm->Render(afm, ioData);
+    return afm->Render(ioData);
 }
 
-static OSStatus    AudioFileManager_Render (AudioFileManager *afm, AudioBufferList *ioData)
+OSStatus AudioFileManager::Render(AudioBufferList *ioData)
 {
     OSStatus result = noErr;
     AudioBuffer *abuf;
@@ -521,84 +519,60 @@ static OSStatus    AudioFileManager_Render (AudioFileManager *afm, AudioBufferLi
 
     for (i = 0; i < ioData->mNumberBuffers; i++) {
         abuf = &ioData->mBuffers[i];
-        if (afm->mBufferOffset >= afm->mBufferSize) {
-            result = afm->GetFileData(afm, &afm->mTmpBuffer, &afm->mBufferSize);
+        if (mBufferOffset >= mBufferSize) {
+            result = GetFileData(&mTmpBuffer, &mBufferSize);
             if (result) {
                 SDL_SetError ("AudioConverterFillBuffer:%ld\n", result);
-                afm->mParent->DoNotification(afm->mParent, result);
+                mParent->DoNotification(result);
                 return result;
             }
 
-            afm->mBufferOffset = 0;
+            mBufferOffset = 0;
         }
 
-        if (abuf->mDataByteSize > afm->mBufferSize - afm->mBufferOffset)
-            abuf->mDataByteSize = afm->mBufferSize - afm->mBufferOffset;
-        abuf->mData = (char *)afm->mTmpBuffer + afm->mBufferOffset;
-        afm->mBufferOffset += abuf->mDataByteSize;
+        if (abuf->mDataByteSize > mBufferSize - mBufferOffset)
+            abuf->mDataByteSize = mBufferSize - mBufferOffset;
+        abuf->mData = (char *)mTmpBuffer + mBufferOffset;
+        mBufferOffset += abuf->mDataByteSize;
     
-        afm->mByteCounter += abuf->mDataByteSize;
-        afm->AfterRender(afm);
+        mByteCounter += abuf->mDataByteSize;
+        AfterRender();
     }
     return result;
 }
 
-
-void delete_AudioFileManager (AudioFileManager *afm)
+AudioFileManager::~AudioFileManager()
 {
-    if (afm != NULL) {
-        if (afm->mFileBuffer) {
-            free(afm->mFileBuffer);
-        }
-
-        SDL_free(afm);
-    }
+    SDL_free(mFileBuffer);
 }
 
-
-AudioFileManager *new_AudioFileManager(AudioFilePlayer *inParent,
+AudioFileManager::AudioFileManager(AudioFilePlayer *inParent,
                                        SInt16          inForkRefNum,
                                        SInt64          inFileLength,
                                        UInt32          inChunkSize)
 {
-    AudioFileManager *afm;
-
     if (sReaderThread == NULL)
     {
         sReaderThread = new_FileReaderThread();
         if (sReaderThread == NULL)
-            return NULL;
+            throw;
     }
 
+#if 0
     afm = (AudioFileManager *) SDL_malloc(sizeof (AudioFileManager));
     if (afm == NULL)
         return NULL;
     SDL_memset(afm, '\0', sizeof (*afm));
+#endif
 
-    #define SET_AUDIOFILEMANAGER_METHOD(m) afm->m = AudioFileManager_##m
-    SET_AUDIOFILEMANAGER_METHOD(Disconnect);
-    SET_AUDIOFILEMANAGER_METHOD(DoConnect);
-    SET_AUDIOFILEMANAGER_METHOD(Read);
-    SET_AUDIOFILEMANAGER_METHOD(GetFileBuffer);
-    SET_AUDIOFILEMANAGER_METHOD(GetParent);
-    SET_AUDIOFILEMANAGER_METHOD(SetPosition);
-    SET_AUDIOFILEMANAGER_METHOD(GetByteCounter);
-    SET_AUDIOFILEMANAGER_METHOD(SetEndOfFile);
-    SET_AUDIOFILEMANAGER_METHOD(Render);
-    SET_AUDIOFILEMANAGER_METHOD(GetFileData);
-    SET_AUDIOFILEMANAGER_METHOD(AfterRender);
-    SET_AUDIOFILEMANAGER_METHOD(FileInputProc);
-    #undef SET_AUDIOFILEMANAGER_METHOD
-
-    afm->mParent = inParent;
-    afm->mForkRefNum = inForkRefNum;
-    afm->mBufferSize = inChunkSize;
-    afm->mBufferOffset = inChunkSize;
-    afm->mChunkSize = inChunkSize;
-    afm->mFileLength = inFileLength;
-    afm->mFileBuffer = (char*) SDL_malloc(afm->mChunkSize * 2);
-    FSGetForkPosition(afm->mForkRefNum, &afm->mAudioDataOffset);
-    assert (afm->mFileBuffer != NULL);
-    return afm;
+    mParent = inParent;
+    mForkRefNum = inForkRefNum;
+    mBufferSize = inChunkSize;
+    mBufferOffset = inChunkSize;
+    mChunkSize = inChunkSize;
+    mFileLength = inFileLength;
+    mFileBuffer = (char*) SDL_malloc(mChunkSize * 2);
+    FSGetForkPosition(mForkRefNum, &mAudioDataOffset);
+    assert (mFileBuffer != NULL);
 }
 

@@ -400,74 +400,70 @@ int LoadFile (const FSRef *ref, int startFrame, int stopFrame)
     if (ReleaseFile () < 0)
         goto bail;
     
-    #if DEBUG_CDROM
+#if DEBUG_CDROM
     printf ("LoadFile: %d %d\n", startFrame, stopFrame);
-    #endif
+#endif
     
-    /*try {*/
-    
+    try {
+        
         /* create a new player, and attach to the audio unit */
         
-        thePlayer = new_AudioFilePlayer(ref);
+        thePlayer = new AudioFilePlayer(ref);
         if (thePlayer == NULL) {
             SDL_SetError ("LoadFile: Could not create player");
             return -3; /*throw (-3);*/
         }
-            
-        if (!thePlayer->SetDestination(thePlayer, &theUnit))
+        
+        if (!thePlayer->SetDestination(&theUnit))
             goto bail;
         
         if (startFrame >= 0)
-            thePlayer->SetStartFrame (thePlayer, startFrame);
+            thePlayer->SetStartFrame (startFrame);
         
         if (stopFrame >= 0 && stopFrame > startFrame)
-            thePlayer->SetStopFrame (thePlayer, stopFrame);
+            thePlayer->SetStopFrame (stopFrame);
         
         /* we set the notifier later */
         /*thePlayer->SetNotifier(thePlayer, FilePlayNotificationHandler, NULL);*/
-            
-        if (!thePlayer->Connect(thePlayer))
+        
+        if (!thePlayer->Connect())
             goto bail;
-    
-        #if DEBUG_CDROM
+        
+#if DEBUG_CDROM
         thePlayer->Print(thePlayer);
         fflush (stdout);
-        #endif
-    /*}
-      catch (...)
-      {
-          goto bail;
-      }*/
-        
+#endif
+    }
+    catch (...) {
+        goto bail;
+    }
+    
     error = 0;
-
-    bail:
+    
+bail:
     return error;
 }
 
 int ReleaseFile ()
 {
     int error = -1;
-        
+    
     /* (Don't see any way that the original C++ code could throw here.) --ryan. */
-    /*try {*/
+    try {
         if (thePlayer != NULL) {
             
-            thePlayer->Disconnect(thePlayer);
-            
-            delete_AudioFilePlayer(thePlayer);
-            
+            thePlayer->Disconnect();
+            delete thePlayer;
             thePlayer = NULL;
         }
-    /*}
-      catch (...)
-      {
-          goto bail;
-      }*/
+    }
+    catch (...) {
+        goto bail;
+    }
     
     error = 0;
     
-/*  bail: */
+bail:
     return error;
 }
 
@@ -478,17 +474,16 @@ int PlayFile ()
     if (CheckInit () < 0)
         goto bail;
         
-    /*try {*/
+    try {
     
         // start processing of the audio unit
         result = AudioOutputUnitStart (theUnit);
-            if (result) goto bail; //THROW_RESULT("PlayFile: AudioOutputUnitStart")
+        if (result) THROW_RESULT("PlayFile: AudioOutputUnitStart");
         
-    /*}
-    catch (...)
-    {
+    }
+    catch (...) {
         goto bail;
-    }*/
+    }
     
     result = 0;
     
@@ -502,17 +497,16 @@ int PauseFile ()
     
     if (CheckInit () < 0)
         goto bail;
-            
-    /*try {*/
     
+    try {
+        
         /* stop processing the audio unit */
         result = AudioOutputUnitStop (theUnit);
-            if (result) goto bail;  /*THROW_RESULT("PauseFile: AudioOutputUnitStop")*/
-    /*}
-      catch (...)
-      {
-          goto bail;
-      }*/
+        if (result) THROW_RESULT("PauseFile: AudioOutputUnitStop")
+            }
+    catch (...) {
+        goto bail;
+    }
     
     result = 0;
 bail:
@@ -525,7 +519,7 @@ void SetCompletionProc (CDPlayerCompletionProc proc, SDL_CD *cdrom)
 
     theCDROM = cdrom;
     completionProc = proc;
-    thePlayer->SetNotifier (thePlayer, FilePlayNotificationHandler, cdrom);
+    thePlayer->SetNotifier (FilePlayNotificationHandler, cdrom);
 }
 
 int GetCurrentFrame ()
@@ -535,7 +529,7 @@ int GetCurrentFrame ()
     if (thePlayer == NULL)
         frame = 0;
     else
-        frame = thePlayer->GetCurrentFrame (thePlayer);
+        frame = thePlayer->GetCurrentFrame();
         
     return frame; 
 }
@@ -544,7 +538,7 @@ int GetCurrentFrame ()
 #pragma mark -- Private Functions --
 
 static OSStatus CheckInit ()
-{    
+{
     if (playBackWasInit)
         return 0;
     
@@ -552,13 +546,13 @@ static OSStatus CheckInit ()
     
     /* Create the callback semaphore */
     callbackSem = SDL_CreateSemaphore(0);
-
+    
     /* Start callback thread */
     SDL_CreateThread(RunCallBackThread, "CD Audio playback", NULL);
-
-    { /*try {*/
-        ComponentDescription desc;
     
+    try {
+        ComponentDescription desc;
+        
         desc.componentType = kAudioUnitType_Output;
         desc.componentSubType = kAudioUnitSubType_DefaultOutput;
         desc.componentManufacturer = kAudioUnitManufacturer_Apple;
@@ -572,19 +566,17 @@ static OSStatus CheckInit ()
         }
         
         result = OpenAComponent (comp, &theUnit);
-            if (result) return -1; //THROW_RESULT("CheckInit: OpenAComponent")
-                    
+        if (result) THROW_RESULT("CheckInit: OpenAComponent")
+        
         // you need to initialize the output unit before you set it as a destination
         result = AudioUnitInitialize (theUnit);
-            if (result) return -1; //THROW_RESULT("CheckInit: AudioUnitInitialize")
+        if (result) THROW_RESULT("CheckInit: AudioUnitInitialize")
         
-                    
+        
         playBackWasInit = true;
+    } catch (...) {
+        return -1;
     }
-    /*catch (...)
-      {
-          return -1;
-      }*/
     
     return 0;
 }
@@ -611,24 +603,24 @@ static void FilePlayNotificationHandler(void * inRefCon, OSStatus inStatus)
 static int RunCallBackThread (void *param)
 {
     for (;;) {
-    
-	SDL_SemWait(callbackSem);
-
+        
+        SDL_SemWait(callbackSem);
+        
         if (completionProc && theCDROM) {
-            #if DEBUG_CDROM
+#if DEBUG_CDROM
             printf ("callback!\n");
-            #endif
+#endif
             (*completionProc)(theCDROM);
         } else {
-            #if DEBUG_CDROM
+#if DEBUG_CDROM
             printf ("callback?\n");
-            #endif
+#endif
         }
     }
     
-    #if DEBUG_CDROM
+#if DEBUG_CDROM
     printf ("thread dying now...\n");
-    #endif
+#endif
     
     return 0;
 }

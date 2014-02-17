@@ -30,13 +30,11 @@
 */
 #include "AudioFilePlayer.h"
 
-/*
 void ThrowResult (OSStatus result, const char* str)
 {
     SDL_SetError ("Error: %s %d", str, result);
     throw result;
 }
-*/
 
 #if DEBUG
 static void PrintStreamDesc (AudioStreamBasicDescription *inDesc)
@@ -60,13 +58,11 @@ static void PrintStreamDesc (AudioStreamBasicDescription *inDesc)
 #endif
 
 
-static int AudioFilePlayer_SetDestination (AudioFilePlayer *afp, AudioUnit  *inDestUnit)
+bool AudioFilePlayer::SetDestination (AudioUnit  *inDestUnit)
 {
-    /*if (afp->mConnected) throw static_cast<OSStatus>(-1);*/ /* can't set dest if already engaged */
-    if (afp->mConnected)
-        return 0 ;
+    if (mConnected) throw static_cast<OSStatus>(-1); /* can't set dest if already engaged */
 
-    SDL_memcpy(&afp->mPlayUnit, inDestUnit, sizeof (afp->mPlayUnit));
+    SDL_memcpy(&mPlayUnit, inDestUnit, sizeof (mPlayUnit));
 
     OSStatus result = noErr;
     
@@ -90,99 +86,94 @@ static int AudioFilePlayer_SetDestination (AudioFilePlayer *afp, AudioUnit  *inD
                                kAudioUnitProperty_StreamFormat,
                                kAudioUnitScope_Input,
                                0,
-                               &afp->mFileDescription,
-                               sizeof (afp->mFileDescription));
+                               &mFileDescription,
+                               sizeof (mFileDescription));
         /*THROW_RESULT("AudioUnitSetProperty")*/
     if (result) return 0;
     return 1;
 }
 
-static void AudioFilePlayer_SetNotifier(AudioFilePlayer *afp, AudioFilePlayNotifier inNotifier, void *inRefCon)
+void AudioFilePlayer::SetNotifier(AudioFilePlayNotifier inNotifier, void *inRefCon)
 {
-    afp->mNotifier = inNotifier;
-    afp->mRefCon = inRefCon;
+    mNotifier = inNotifier;
+    mRefCon = inRefCon;
 }
 
-static int AudioFilePlayer_IsConnected(AudioFilePlayer *afp)
+bool AudioFilePlayer::IsConnected()
 {
-    return afp->mConnected;
+    return mConnected;
 }
 
-static AudioUnit AudioFilePlayer_GetDestUnit(AudioFilePlayer *afp)
+AudioUnit AudioFilePlayer::GetDestUnit()
 {
-   return afp->mPlayUnit;
+   return mPlayUnit;
 }
 
-static void AudioFilePlayer_Print(AudioFilePlayer *afp)
+void AudioFilePlayer::Print()
 {
 #if DEBUG    
-    printf ("Is Connected:%s\n", (afp->IsConnected(afp) ? "true" : "false"));
+    printf ("Is Connected:%s\n", (IsConnected() ? "true" : "false"));
     printf ("- - - - - - - - - - - - - - \n");
 #endif
 }
 
-static void    AudioFilePlayer_SetStartFrame (AudioFilePlayer *afp, int frame)
+void    AudioFilePlayer::SetStartFrame (int frame)
 {
     SInt64 position = frame * 2352;
 
-    afp->mStartFrame = frame;
-    afp->mAudioFileManager->SetPosition (afp->mAudioFileManager, position);
+    mStartFrame = frame;
+    mAudioFileManager->SetPosition(position);
 }
 
-    
-static int    AudioFilePlayer_GetCurrentFrame (AudioFilePlayer *afp)
+int AudioFilePlayer::GetCurrentFrame()
 {
-    return afp->mStartFrame + (afp->mAudioFileManager->GetByteCounter(afp->mAudioFileManager) / 2352);
+    return mStartFrame + (mAudioFileManager->GetByteCounter() / 2352);
 }
     
-static void    AudioFilePlayer_SetStopFrame (AudioFilePlayer *afp, int frame)
+void AudioFilePlayer::SetStopFrame (int frame)
 {
     SInt64 position  = frame * 2352;
     
-    afp->mAudioFileManager->SetEndOfFile (afp->mAudioFileManager, position);
-}
-    
-void delete_AudioFilePlayer(AudioFilePlayer *afp)
-{
-    if (afp != NULL)
-    {
-        afp->Disconnect(afp);
-        
-        if (afp->mAudioFileManager) {
-            delete_AudioFileManager(afp->mAudioFileManager);
-            afp->mAudioFileManager = 0;
-        }
-    
-        if (afp->mForkRefNum) {
-            FSCloseFork (afp->mForkRefNum);
-            afp->mForkRefNum = 0;
-        }
-        SDL_free(afp);
-    }
+    mAudioFileManager->SetEndOfFile(position);
 }
 
-static int    AudioFilePlayer_Connect(AudioFilePlayer *afp)
+AudioFilePlayer::~AudioFilePlayer()
+{
+        Disconnect();
+        
+        if (mAudioFileManager) {
+            delete mAudioFileManager;
+            mAudioFileManager = 0;
+        }
+    
+        if (mForkRefNum) {
+            FSCloseFork (mForkRefNum);
+            mForkRefNum = 0;
+        }
+}
+
+int AudioFilePlayer::Connect()
 {
 #if DEBUG
-    printf ("Connect:%lx, engaged=%d\n", (long)afp->mPlayUnit, (afp->mConnected ? 1 : 0));
+    printf ("Connect:%lx, engaged=%d\n", (long)mPlayUnit, (mConnected ? 1 : 0));
 #endif
-    if (!afp->mConnected)
+    if (!mConnected)
     {           
-        if (!afp->mAudioFileManager->DoConnect(afp->mAudioFileManager))
+        if (!mAudioFileManager->DoConnect())
             return 0;
 
         /* set the render callback for the file data to be supplied to the sound converter AU */
-        afp->mInputCallback.inputProc = afp->mAudioFileManager->FileInputProc;
-        afp->mInputCallback.inputProcRefCon = afp->mAudioFileManager;
+        mInputCallback.inputProc = mAudioFileManager->FileInputProc;
+        mInputCallback.inputProcRefCon = mAudioFileManager;
 
-        OSStatus result = AudioUnitSetProperty (afp->mPlayUnit, 
+        OSStatus result = AudioUnitSetProperty(mPlayUnit,
                             kAudioUnitProperty_SetRenderCallback,
                             kAudioUnitScope_Input, 
                             0,
-                            &afp->mInputCallback, 
-                            sizeof(afp->mInputCallback));
-        if (result) return 0;  /*THROW_RESULT("AudioUnitSetProperty")*/
-        afp->mConnected = 1;
+                            &mInputCallback,
+                            sizeof(mInputCallback));
+        if (result)  THROW_RESULT("AudioUnitSetProperty");
+        mConnected = 1;
     }
 
     return 1;
@@ -190,41 +181,41 @@ static int    AudioFilePlayer_Connect(AudioFilePlayer *afp)
 
 /* warning noted, now please go away ;-) */
 /* #warning This should redirect the calling of notification code to some other thread */
-static void    AudioFilePlayer_DoNotification (AudioFilePlayer *afp, OSStatus inStatus)
+void AudioFilePlayer::DoNotification (OSStatus inStatus)
 {
-    if (afp->mNotifier) {
-        (*afp->mNotifier) (afp->mRefCon, inStatus);
+    if (mNotifier) {
+        (*mNotifier) (mRefCon, inStatus);
     } else {
         SDL_SetError ("Notification posted with no notifier in place");
         
         if (inStatus == kAudioFilePlay_FileIsFinished)
-            afp->Disconnect(afp);
+            Disconnect();
         else if (inStatus != kAudioFilePlayErr_FilePlayUnderrun)
-            afp->Disconnect(afp);
+            Disconnect();
     }
 }
 
-static void    AudioFilePlayer_Disconnect (AudioFilePlayer *afp)
+void AudioFilePlayer::Disconnect()
 {
 #if DEBUG
-    printf ("Disconnect:%lx,%d, engaged=%d\n", (long)afp->mPlayUnit, 0, (afp->mConnected ? 1 : 0));
+    printf ("Disconnect:%lx,%d, engaged=%d\n", (long)mPlayUnit, 0, (mConnected ? 1 : 0));
 #endif
-    if (afp->mConnected)
+    if (mConnected)
     {
-        afp->mConnected = 0;
+        mConnected = 0;
             
-        afp->mInputCallback.inputProc = 0;
-        afp->mInputCallback.inputProcRefCon = 0;
-        OSStatus result = AudioUnitSetProperty (afp->mPlayUnit, 
+        mInputCallback.inputProc = 0;
+        mInputCallback.inputProcRefCon = 0;
+        OSStatus result = AudioUnitSetProperty (mPlayUnit,
                                         kAudioUnitProperty_SetRenderCallback,
                                         kAudioUnitScope_Input, 
                                         0,
-                                        &afp->mInputCallback, 
-                                        sizeof(afp->mInputCallback));
+                                        &mInputCallback,
+                                        sizeof(mInputCallback));
         if (result) 
             SDL_SetError ("AudioUnitSetProperty:RemoveInputCallback:%ld", result);
 
-        afp->mAudioFileManager->Disconnect(afp->mAudioFileManager);
+        mAudioFileManager->Disconnect();
     }
 }
 
@@ -233,7 +224,7 @@ typedef struct {
     UInt32 blockSize;
 } SSNDData;
 
-static int    AudioFilePlayer_OpenFile (AudioFilePlayer *afp, const FSRef *inRef, SInt64 *outFileDataSize)
+int AudioFilePlayer::OpenFile(const FSRef *inRef, SInt64 *outFileDataSize)
 {
     ContainerChunk chunkHeader;
     ChunkHeader chunk;
@@ -246,14 +237,14 @@ static int    AudioFilePlayer_OpenFile (AudioFilePlayer *afp, const FSRef *inRef
 
     /* Open the data fork of the input file */
     result = FSGetDataForkName(&dfName);
-       if (result) return 0; /*THROW_RESULT("AudioFilePlayer::OpenFile(): FSGetDataForkName")*/
+    if (result) THROW_RESULT("AudioFilePlayer::OpenFile(): FSGetDataForkName");
 
-    result = FSOpenFork(inRef, dfName.length, dfName.unicode, fsRdPerm, &afp->mForkRefNum);
-       if (result) return 0; /*THROW_RESULT("AudioFilePlayer::OpenFile(): FSOpenFork")*/
+    result = FSOpenFork(inRef, dfName.length, dfName.unicode, fsRdPerm, &mForkRefNum);
+    if (result) THROW_RESULT("AudioFilePlayer::OpenFile(): FSOpenFork");
  
     /* Read the file header, and check if it's indeed an AIFC file */
-    result = FSReadFork(afp->mForkRefNum, fsAtMark, 0, sizeof(chunkHeader), &chunkHeader, &actual);
-       if (result) return 0; /*THROW_RESULT("AudioFilePlayer::OpenFile(): FSReadFork")*/
+    result = FSReadFork(mForkRefNum, fsAtMark, 0, sizeof(chunkHeader), &chunkHeader, &actual);
+    if (result)  THROW_RESULT("AudioFilePlayer::OpenFile(): FSReadFork");
 
     if (SDL_SwapBE32(chunkHeader.ckID) != 'FORM') {
         result = -1;
@@ -272,8 +263,8 @@ static int    AudioFilePlayer_OpenFile (AudioFilePlayer *afp, const FSRef *inRef
     */
     offset = 0;
     do {
-        result = FSReadFork(afp->mForkRefNum, fsFromMark, offset, sizeof(chunk), &chunk, &actual);
-        if (result) return 0; /*THROW_RESULT("AudioFilePlayer::OpenFile(): FSReadFork")*/
+        result = FSReadFork(mForkRefNum, fsFromMark, offset, sizeof(chunk), &chunk, &actual);
+        if (result) THROW_RESULT("AudioFilePlayer::OpenFile(): FSReadFork");
 
         chunk.ckID = SDL_SwapBE32(chunk.ckID);
         chunk.ckSize = SDL_SwapBE32(chunk.ckSize);
@@ -284,77 +275,66 @@ static int    AudioFilePlayer_OpenFile (AudioFilePlayer *afp, const FSRef *inRef
 
     /* Read the header of the SSND chunk. After this, we are positioned right
        at the start of the audio data. */
-    result = FSReadFork(afp->mForkRefNum, fsAtMark, 0, sizeof(ssndData), &ssndData, &actual);
-    if (result) return 0; /*THROW_RESULT("AudioFilePlayer::OpenFile(): FSReadFork")*/
+    result = FSReadFork(mForkRefNum, fsAtMark, 0, sizeof(ssndData), &ssndData, &actual);
+    if (result) THROW_RESULT("AudioFilePlayer::OpenFile(): FSReadFork");
 
     ssndData.offset = SDL_SwapBE32(ssndData.offset);
 
-    result = FSSetForkPosition(afp->mForkRefNum, fsFromMark, ssndData.offset);
-    if (result) return 0; /*THROW_RESULT("AudioFilePlayer::OpenFile(): FSSetForkPosition")*/
+    result = FSSetForkPosition(mForkRefNum, fsFromMark, ssndData.offset);
+    if (result) THROW_RESULT("AudioFilePlayer::OpenFile(): FSSetForkPosition");
 
     /* Data size */
     *outFileDataSize = chunk.ckSize - ssndData.offset - 8;
 
     /* File format */
-    afp->mFileDescription.mSampleRate = 44100;
-    afp->mFileDescription.mFormatID = kAudioFormatLinearPCM;
-    afp->mFileDescription.mFormatFlags = kLinearPCMFormatFlagIsPacked | kLinearPCMFormatFlagIsSignedInteger;
-    afp->mFileDescription.mBytesPerPacket = 4;
-    afp->mFileDescription.mFramesPerPacket = 1;
-    afp->mFileDescription.mBytesPerFrame = 4;
-    afp->mFileDescription.mChannelsPerFrame = 2;
-    afp->mFileDescription.mBitsPerChannel = 16;
+    mFileDescription.mSampleRate = 44100;
+    mFileDescription.mFormatID = kAudioFormatLinearPCM;
+    mFileDescription.mFormatFlags = kLinearPCMFormatFlagIsPacked | kLinearPCMFormatFlagIsSignedInteger;
+    mFileDescription.mBytesPerPacket = 4;
+    mFileDescription.mFramesPerPacket = 1;
+    mFileDescription.mBytesPerFrame = 4;
+    mFileDescription.mChannelsPerFrame = 2;
+    mFileDescription.mBitsPerChannel = 16;
 
     return 1;
 }
 
-AudioFilePlayer *new_AudioFilePlayer (const FSRef *inFileRef)
+AudioFilePlayer::AudioFilePlayer(const FSRef *inFileRef)
 {
     SInt64 fileDataSize  = 0;
-
-    AudioFilePlayer *afp = (AudioFilePlayer *) SDL_malloc(sizeof (AudioFilePlayer));
-    if (afp == NULL)
-        return NULL;
-    SDL_memset(afp, '\0', sizeof (*afp));
-
-    #define SET_AUDIOFILEPLAYER_METHOD(m) afp->m = AudioFilePlayer_##m
-    SET_AUDIOFILEPLAYER_METHOD(SetDestination);
-    SET_AUDIOFILEPLAYER_METHOD(SetNotifier);
-    SET_AUDIOFILEPLAYER_METHOD(SetStartFrame);
-    SET_AUDIOFILEPLAYER_METHOD(GetCurrentFrame);
-    SET_AUDIOFILEPLAYER_METHOD(SetStopFrame);
-    SET_AUDIOFILEPLAYER_METHOD(Connect);
-    SET_AUDIOFILEPLAYER_METHOD(Disconnect);
-    SET_AUDIOFILEPLAYER_METHOD(DoNotification);
-    SET_AUDIOFILEPLAYER_METHOD(IsConnected);
-    SET_AUDIOFILEPLAYER_METHOD(GetDestUnit);
-    SET_AUDIOFILEPLAYER_METHOD(Print);
-    SET_AUDIOFILEPLAYER_METHOD(OpenFile);
-    #undef SET_AUDIOFILEPLAYER_METHOD
-
-    if (!afp->OpenFile (afp, inFileRef, &fileDataSize))
+    
+    mPlayUnit = NULL;
+    mForkRefNum = 0;
+    memset(&mInputCallback, 0, sizeof(mInputCallback));
+    memset(&mInputCallback, 0, sizeof(mInputCallback));
+    memset(&mFileDescription, 0, sizeof(mFileDescription));
+    mConnected = 0;
+    mAudioFileManager = NULL;
+    mNotifier = NULL;
+    mRefCon = NULL;
+    mStartFrame = 0;
+    
+    if (!OpenFile (inFileRef, &fileDataSize))
     {
-        SDL_free(afp);
-        return NULL;
+        throw;
     }
-        
+    
     /* we want about 4 seconds worth of data for the buffer */
-    int bytesPerSecond = (UInt32) (4 * afp->mFileDescription.mSampleRate * afp->mFileDescription.mBytesPerFrame);
+    int bytesPerSecond = (UInt32) (4 * mFileDescription.mSampleRate * mFileDescription.mBytesPerFrame);
     
 #if DEBUG
     printf("File format:\n");
-    PrintStreamDesc (&afp->mFileDescription);
+    PrintStreamDesc (&mFileDescription);
 #endif
     
-    afp->mAudioFileManager = new_AudioFileManager(afp, afp->mForkRefNum,
-                                                  fileDataSize,
-                                                  bytesPerSecond);
-    if (afp->mAudioFileManager == NULL)
+    mAudioFileManager = new AudioFileManager(this, mForkRefNum,
+                                             fileDataSize,
+                                             bytesPerSecond);
+    
+    if (mAudioFileManager == NULL)
     {
-        delete_AudioFilePlayer(afp);
-        return NULL;
+        delete this;
+        return;
     }
-
-    return afp;
 }
 
