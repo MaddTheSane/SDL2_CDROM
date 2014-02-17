@@ -102,7 +102,7 @@ int DetectAudioCDVolumes(FSVolumeRefNum *volumes, int numVolumes)
         
         memset (&volumeInfo, 0, sizeof(volumeInfo));
         
-        result = FSGetVolumeInfo (kFSInvalidVolumeRefNum,
+        result = FSGetVolumeInfo(kFSInvalidVolumeRefNum,
                                   volumeIndex,
                                   &actualVolume,
                                   kFSVolInfoFSInfo,

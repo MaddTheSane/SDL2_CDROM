@@ -164,7 +164,7 @@ void delete_AudioFilePlayer(AudioFilePlayer *afp)
 static int    AudioFilePlayer_Connect(AudioFilePlayer *afp)
 {
 #if DEBUG
-    printf ("Connect:%x, engaged=%d\n", (int)afp->mPlayUnit, (afp->mConnected ? 1 : 0));
+    printf ("Connect:%lx, engaged=%d\n", (long)afp->mPlayUnit, (afp->mConnected ? 1 : 0));
 #endif
     if (!afp->mConnected)
     {           
@@ -207,7 +207,7 @@ static void    AudioFilePlayer_DoNotification (AudioFilePlayer *afp, OSStatus in
 static void    AudioFilePlayer_Disconnect (AudioFilePlayer *afp)
 {
 #if DEBUG
-    printf ("Disconnect:%x,%ld, engaged=%d\n", (int)afp->mPlayUnit, 0, (afp->mConnected ? 1 : 0));
+    printf ("Disconnect:%lx,%d, engaged=%d\n", (long)afp->mPlayUnit, 0, (afp->mConnected ? 1 : 0));
 #endif
     if (afp->mConnected)
     {

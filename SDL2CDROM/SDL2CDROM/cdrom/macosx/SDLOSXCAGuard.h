@@ -108,9 +108,15 @@ typedef struct S_SDLOSXCAGuard
     pthread_cond_t  mCondVar;
     pthread_t       mOwner;
 } SDLOSXCAGuard;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 SDLOSXCAGuard *new_SDLOSXCAGuard(void);
 void delete_SDLOSXCAGuard(SDLOSXCAGuard *cag);
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

@@ -37,10 +37,6 @@
 #include <AudioUnit/AUNTComponent.h>
 #endif
 
-#if (MAC_OS_X_VERSION_MAX_ALLOWED < 1050)
-typedef SInt16 FSIORefNum;
-#endif
-
 #include "SDL_error.h"
 
 const char* AudioFilePlayerErrorStr (OSStatus error);
@@ -55,7 +51,7 @@ void ThrowResult (OSStatus result, const char *str);
 */
 
 typedef void (*AudioFilePlayNotifier)(void          *inRefCon,
-                                    OSStatus        inStatus);
+                                      OSStatus      inStatus);
 
 enum {
     kAudioFilePlayErr_FilePlayUnderrun = -10000,
@@ -167,11 +163,11 @@ typedef struct S_AudioFileManager
 } AudioFileManager;
 
 
-AudioFileManager *new_AudioFileManager (AudioFilePlayer *inParent,
-                      SInt16          inForkRefNum, 
-                      SInt64          inFileLength,
-                      UInt32          inChunkSize);
-    
+AudioFileManager *new_AudioFileManager(AudioFilePlayer *inParent,
+                                       SInt16          inForkRefNum,
+                                       SInt64          inFileLength,
+                                       UInt32          inChunkSize);
+
 void delete_AudioFileManager(AudioFileManager *afm);
 
 #endif
