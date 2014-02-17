@@ -89,31 +89,34 @@
     return false if they receive notification any other way.
   =============================================================================*/
 
-typedef struct S_SDLOSXCAGuard
+class SDLOSXCAGuard
 {
 
 /*  Construction/Destruction */
-/*public:*/
+public:
+    SDLOSXCAGuard();
+    ~SDLOSXCAGuard();
 /*  Actions */
-/*public:*/
-    int     (*Lock)(struct S_SDLOSXCAGuard *cag);
-    void    (*Unlock)(struct S_SDLOSXCAGuard *cag);
-    int     (*Try)(struct S_SDLOSXCAGuard *cag, int *outWasLocked);    /* returns true if lock is free, false if not */
-    void    (*Wait)(struct S_SDLOSXCAGuard *cag);
-    void    (*Notify)(struct S_SDLOSXCAGuard *cag);
+    bool	Lock();
+    void	Unlock();
+    bool	Try(int *outWasLocked);    /* returns true if lock is free, false if not */
+    void	Wait();
+    void	Notify();
 
 /*  Implementation */
-/*protected:*/
-    pthread_mutex_t mMutex;
-    pthread_cond_t  mCondVar;
-    pthread_t       mOwner;
-} SDLOSXCAGuard;
+protected:
+    pthread_mutex_t	mMutex;
+    pthread_cond_t	mCondVar;
+    pthread_t		mOwner;
+};
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 SDLOSXCAGuard *new_SDLOSXCAGuard(void);
 void delete_SDLOSXCAGuard(SDLOSXCAGuard *cag);
+
 #ifdef __cplusplus
 }
 #endif

@@ -80,7 +80,7 @@ int FileReaderThread::TryNextRead(AudioFileManager* inItem)
 {
     int didLock = 0;
     int succeeded = 0;
-    if (mGuard->Try(mGuard, &didLock))
+    if (mGuard->Try(&didLock))
     {
         /*frt->mFileData.push_back (inItem);*/
         /* !!! FIXME: this could be faster with a "tail" member. --ryan. */
@@ -97,31 +97,31 @@ int FileReaderThread::TryNextRead(AudioFileManager* inItem)
         else
             prev->next = newfd;
 
-        mGuard->Notify(mGuard);
+        mGuard->Notify();
         succeeded = 1;
 
         if (didLock)
-            mGuard->Unlock(mGuard);
+            mGuard->Unlock();
     }
                 
     return succeeded;
 }
 
-void    FileReaderThread::AddReader()
+void FileReaderThread::AddReader()
 {
     if (mNumReaders == 0)
     {
         mThreadShouldDie = 0;
-        StartFixedPriorityThread ();
+        StartFixedPriorityThread();
     }
     mNumReaders++;
 }
 
-void    FileReaderThread::RemoveReader (AudioFileManager* inItem)
+void FileReaderThread::RemoveReader (AudioFileManager* inItem)
 {
     if (mNumReaders > 0)
     {
-        int bNeedsRelease = mGuard->Lock(mGuard);
+        int bNeedsRelease = mGuard->Lock();
         
         /*frt->mFileData.remove (inItem);*/
         FileData *i = mFileData;
@@ -144,12 +144,12 @@ void    FileReaderThread::RemoveReader (AudioFileManager* inItem)
 
         if (--mNumReaders == 0) {
             mThreadShouldDie = 1;
-            mGuard->Notify(mGuard); /* wake up thread so it will quit */
-            mGuard->Wait(mGuard);   /* wait for thread to die */
+            mGuard->Notify(); /* wake up thread so it will quit */
+            mGuard->Wait();   /* wait for thread to die */
         }
 
         if (bNeedsRelease)
-            mGuard->Unlock(mGuard);
+            mGuard->Unlock();
     }   
 }
 
@@ -252,27 +252,27 @@ void    FileReaderThread::ReadNextChunk()
     for (;;) 
     {
         { /* this is a scoped based lock */
-            int bNeedsRelease = mGuard->Lock(mGuard);
+            int bNeedsRelease = mGuard->Lock();
             
             if (mThreadShouldDie) {
-                mGuard->Notify(mGuard);
+                mGuard->Notify();
                 if (bNeedsRelease)
-                    mGuard->Unlock(mGuard);
+                    mGuard->Unlock();
                 return;
             }
             
             /*if (frt->mFileData.empty())*/
             if (mFileData == NULL)
             {
-                mGuard->Wait(mGuard);
+                mGuard->Wait();
             }
                         
             /* kill thread */
             if (mThreadShouldDie) {
             
-                mGuard->Notify(mGuard);
+                mGuard->Notify();
                 if (bNeedsRelease)
-                    mGuard->Unlock(mGuard);
+                    mGuard->Unlock();
                 return;
             }
 
@@ -287,7 +287,8 @@ void    FileReaderThread::ReadNextChunk()
                 mFileData = next;
             }
 
-            if (bNeedsRelease) mGuard->Unlock(mGuard);
+            if (bNeedsRelease)
+				mGuard->Unlock();
         }
     
         if ((theItem->mFileLength - theItem->mReadFilePosition) < theItem->mChunkSize)
@@ -331,18 +332,17 @@ void    FileReaderThread::ReadNextChunk()
 
 void delete_FileReaderThread(FileReaderThread *frt)
 {
-    if (frt != NULL)
-    {
+    if (frt != NULL) {
         delete frt;
     }
 }
 
 FileReaderThread::~FileReaderThread()
 {
-    delete_SDLOSXCAGuard(mGuard);
+    delete mGuard;
 }
 
-FileReaderThread *new_FileReaderThread ()
+FileReaderThread *new_FileReaderThread()
 {
     return new FileReaderThread();
 }
@@ -353,19 +353,16 @@ FileReaderThread::FileReaderThread()
     mNumReaders = 0;
     mFileData = NULL;
 
-    mGuard = new_SDLOSXCAGuard();
+    mGuard = new SDLOSXCAGuard();
 
     mThreadPriority = 62;
 }
 
-
 static FileReaderThread *sReaderThread;
-
 
 int AudioFileManager::DoConnect()
 {
-    if (!mIsEngaged)
-    {
+    if (!mIsEngaged) {
         OSStatus result;
 
         /*afm->mReadFilePosition = 0;*/
@@ -453,10 +450,10 @@ void AudioFileManager::AfterRender()
     {
         int didLock = 0;
         SDLOSXCAGuard *guard = sReaderThread->GetGuard();
-        if (guard->Try(guard, &didLock)) {
+        if (guard->Try(&didLock)) {
             mParent->DoNotification(kAudioFilePlay_FileIsFinished);
             if (didLock)
-                guard->Unlock(guard);
+                guard->Unlock();
         }
     }
 
@@ -500,12 +497,12 @@ int AudioFileManager::GetByteCounter()
     return mByteCounter;
 }
 
-OSStatus AudioFileManager::FileInputProc (void                            *inRefCon,
-                                          AudioUnitRenderActionFlags      *ioActionFlags,
-                                          const AudioTimeStamp            *inTimeStamp,
-                                          UInt32                          inBusNumber,
-                                          UInt32                          inNumberFrames,
-                                          AudioBufferList                 *ioData)
+OSStatus AudioFileManager::FileInputProc(void                            *inRefCon,
+										 AudioUnitRenderActionFlags      *ioActionFlags,
+										 const AudioTimeStamp            *inTimeStamp,
+										 UInt32                          inBusNumber,
+										 UInt32                          inNumberFrames,
+										 AudioBufferList                 *ioData)
 {
     AudioFileManager* afm = (AudioFileManager*)inRefCon;
     return afm->Render(ioData);
@@ -547,9 +544,9 @@ AudioFileManager::~AudioFileManager()
 }
 
 AudioFileManager::AudioFileManager(AudioFilePlayer *inParent,
-                                       SInt16          inForkRefNum,
-                                       SInt64          inFileLength,
-                                       UInt32          inChunkSize)
+                                   SInt16          inForkRefNum,
+                                   SInt64          inFileLength,
+                                   UInt32          inChunkSize)
 {
     if (sReaderThread == NULL)
     {

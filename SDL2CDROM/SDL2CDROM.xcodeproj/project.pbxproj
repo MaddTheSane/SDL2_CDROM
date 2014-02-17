@@ -20,7 +20,7 @@
 		5557774D17EC15B60019D008 /* CDPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5557773417EC15920019D008 /* CDPlayer.h */; };
 		5557774E17EC15B60019D008 /* SDL_syscdrom.c in Sources */ = {isa = PBXBuildFile; fileRef = 5557773517EC15920019D008 /* SDL_syscdrom.c */; };
 		5557774F17EC15B60019D008 /* SDL_syscdrom_c.h in Headers */ = {isa = PBXBuildFile; fileRef = 5557773617EC15920019D008 /* SDL_syscdrom_c.h */; };
-		5557775017EC15B60019D008 /* SDLOSXCAGuard.c in Sources */ = {isa = PBXBuildFile; fileRef = 5557773717EC15920019D008 /* SDLOSXCAGuard.c */; };
+		5557775017EC15B60019D008 /* SDLOSXCAGuard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5557773717EC15920019D008 /* SDLOSXCAGuard.cpp */; };
 		5557775117EC15B60019D008 /* SDLOSXCAGuard.h in Headers */ = {isa = PBXBuildFile; fileRef = 5557773817EC15920019D008 /* SDLOSXCAGuard.h */; };
 		5557775317EC17830019D008 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5557775217EC17830019D008 /* AudioUnit.framework */; };
 /* End PBXBuildFile section */
@@ -43,15 +43,15 @@
 		5557772717EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; };
 		5557772917EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; };
 		5557772B17EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; };
-		5557773017EC15920019D008 /* AudioFilePlayer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AudioFilePlayer.cpp; sourceTree = "<group>"; usesTabs = 0; };
-		5557773117EC15920019D008 /* AudioFilePlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioFilePlayer.h; sourceTree = "<group>"; usesTabs = 0; };
-		5557773217EC15920019D008 /* AudioFileReaderThread.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AudioFileReaderThread.cpp; sourceTree = "<group>"; usesTabs = 0; };
-		5557773317EC15920019D008 /* CDPlayer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CDPlayer.cpp; sourceTree = "<group>"; usesTabs = 0; };
-		5557773417EC15920019D008 /* CDPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CDPlayer.h; sourceTree = "<group>"; usesTabs = 0; };
-		5557773517EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; usesTabs = 0; };
-		5557773617EC15920019D008 /* SDL_syscdrom_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDL_syscdrom_c.h; sourceTree = "<group>"; usesTabs = 0; };
-		5557773717EC15920019D008 /* SDLOSXCAGuard.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDLOSXCAGuard.c; sourceTree = "<group>"; usesTabs = 0; };
-		5557773817EC15920019D008 /* SDLOSXCAGuard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDLOSXCAGuard.h; sourceTree = "<group>"; usesTabs = 0; };
+		5557773017EC15920019D008 /* AudioFilePlayer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AudioFilePlayer.cpp; sourceTree = "<group>"; usesTabs = 1; };
+		5557773117EC15920019D008 /* AudioFilePlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioFilePlayer.h; sourceTree = "<group>"; usesTabs = 1; };
+		5557773217EC15920019D008 /* AudioFileReaderThread.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AudioFileReaderThread.cpp; sourceTree = "<group>"; usesTabs = 1; };
+		5557773317EC15920019D008 /* CDPlayer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CDPlayer.cpp; sourceTree = "<group>"; usesTabs = 1; };
+		5557773417EC15920019D008 /* CDPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CDPlayer.h; sourceTree = "<group>"; usesTabs = 1; };
+		5557773517EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; usesTabs = 1; };
+		5557773617EC15920019D008 /* SDL_syscdrom_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDL_syscdrom_c.h; sourceTree = "<group>"; usesTabs = 1; };
+		5557773717EC15920019D008 /* SDLOSXCAGuard.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SDLOSXCAGuard.cpp; sourceTree = "<group>"; usesTabs = 1; };
+		5557773817EC15920019D008 /* SDLOSXCAGuard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDLOSXCAGuard.h; sourceTree = "<group>"; usesTabs = 1; };
 		5557773C17EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; };
 		5557774317EC15920019D008 /* SDL_cdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_cdrom.c; sourceTree = "<group>"; };
 		5557774417EC15920019D008 /* SDL_syscdrom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDL_syscdrom.h; sourceTree = "<group>"; };
@@ -208,7 +208,7 @@
 				5557773417EC15920019D008 /* CDPlayer.h */,
 				5557773517EC15920019D008 /* SDL_syscdrom.c */,
 				5557773617EC15920019D008 /* SDL_syscdrom_c.h */,
-				5557773717EC15920019D008 /* SDLOSXCAGuard.c */,
+				5557773717EC15920019D008 /* SDLOSXCAGuard.cpp */,
 				5557773817EC15920019D008 /* SDLOSXCAGuard.h */,
 			);
 			path = macosx;
@@ -313,7 +313,7 @@
 				5557774E17EC15B60019D008 /* SDL_syscdrom.c in Sources */,
 				5557774717EC15A90019D008 /* SDL_cdrom.c in Sources */,
 				5557774917EC15B60019D008 /* AudioFilePlayer.cpp in Sources */,
-				5557775017EC15B60019D008 /* SDLOSXCAGuard.c in Sources */,
+				5557775017EC15B60019D008 /* SDLOSXCAGuard.cpp in Sources */,
 				5557774C17EC15B60019D008 /* CDPlayer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

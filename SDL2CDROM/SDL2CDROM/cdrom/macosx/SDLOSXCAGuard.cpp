@@ -91,46 +91,46 @@
     SDLOSXCAGuard
   =============================================================================*/
 
-static int SDLOSXCAGuard_Lock(SDLOSXCAGuard *cag)
+bool SDLOSXCAGuard::Lock()
 {
     int theAnswer = 0;
     
-    if(pthread_self() != cag->mOwner)
+    if(pthread_self() != mOwner)
     {
-        OSStatus theError = pthread_mutex_lock(&cag->mMutex);
+        OSStatus theError = pthread_mutex_lock(&mMutex);
         (void)theError;
         assert(theError == 0);
-        cag->mOwner = pthread_self();
+        mOwner = pthread_self();
         theAnswer = 1;
     }
-
+	
     return theAnswer;
 }
 
-static void    SDLOSXCAGuard_Unlock(SDLOSXCAGuard *cag)
+void SDLOSXCAGuard::Unlock()
 {
     OSStatus theError;
-    assert(pthread_self() == cag->mOwner);
-
-    cag->mOwner = 0;
-    theError = pthread_mutex_unlock(&cag->mMutex);
+    assert(pthread_self() == mOwner);
+	
+    mOwner = 0;
+    theError = pthread_mutex_unlock(&mMutex);
     (void)theError;
     assert(theError == 0);
 }
 
-static int SDLOSXCAGuard_Try (SDLOSXCAGuard *cag, int *outWasLocked)
+bool SDLOSXCAGuard::Try(int *outWasLocked)
 {
-    int theAnswer = 0;
+    bool theAnswer = false;
     *outWasLocked = 0;
     
-    if (pthread_self() == cag->mOwner) {
-        theAnswer = 1;
+    if (pthread_self() == mOwner) {
+        theAnswer = true;
         *outWasLocked = 0;
     } else {
-        OSStatus theError = pthread_mutex_trylock(&cag->mMutex);
+        OSStatus theError = pthread_mutex_trylock(&mMutex);
         if (theError == 0) {
-            cag->mOwner = pthread_self();
-            theAnswer = 1;
+            mOwner = pthread_self();
+            theAnswer = true;
             *outWasLocked = 1;
         }
     }
@@ -138,62 +138,58 @@ static int SDLOSXCAGuard_Try (SDLOSXCAGuard *cag, int *outWasLocked)
     return theAnswer;
 }
 
-static void    SDLOSXCAGuard_Wait(SDLOSXCAGuard *cag)
+void SDLOSXCAGuard::Wait()
 {
     OSStatus theError;
-    assert(pthread_self() == cag->mOwner);
-
-    cag->mOwner = 0;
-
-    theError = pthread_cond_wait(&cag->mCondVar, &cag->mMutex);
+    assert(pthread_self() == mOwner);
+	
+    mOwner = 0;
+	
+    theError = pthread_cond_wait(&mCondVar, &mMutex);
     (void)theError;
     assert(theError == 0);
-    cag->mOwner = pthread_self();
+    mOwner = pthread_self();
 }
 
-static void    SDLOSXCAGuard_Notify(SDLOSXCAGuard *cag)
+void SDLOSXCAGuard::Notify()
 {
-    OSStatus theError = pthread_cond_signal(&cag->mCondVar);
+    OSStatus theError = pthread_cond_signal(&mCondVar);
     (void)theError;
     assert(theError == 0);
 }
 
+SDLOSXCAGuard *new_SDLOSXCAGuard()
+{
+	return new SDLOSXCAGuard();
+}
 
-SDLOSXCAGuard *new_SDLOSXCAGuard(void)
+SDLOSXCAGuard::SDLOSXCAGuard()
 {
     OSStatus theError;
-    SDLOSXCAGuard *cag = (SDLOSXCAGuard *) SDL_malloc(sizeof (SDLOSXCAGuard));
-    if (cag == NULL)
-        return NULL;
-    SDL_memset(cag, '\0', sizeof (*cag));
 
-    #define SET_SDLOSXCAGUARD_METHOD(m) cag->m = SDLOSXCAGuard_##m
-    SET_SDLOSXCAGUARD_METHOD(Lock);
-    SET_SDLOSXCAGUARD_METHOD(Unlock);
-    SET_SDLOSXCAGUARD_METHOD(Try);
-    SET_SDLOSXCAGUARD_METHOD(Wait);
-    SET_SDLOSXCAGUARD_METHOD(Notify);
-    #undef SET_SDLOSXCAGUARD_METHOD
-
-    theError = pthread_mutex_init(&cag->mMutex, NULL);
+    theError = pthread_mutex_init(&mMutex, NULL);
     (void)theError;
     assert(theError == 0);
     
-    theError = pthread_cond_init(&cag->mCondVar, NULL);
+    theError = pthread_cond_init(&mCondVar, NULL);
     (void)theError;
     assert(theError == 0);
     
-    cag->mOwner = 0;
-    return cag;
+    mOwner = 0;
 }
 
 void delete_SDLOSXCAGuard(SDLOSXCAGuard *cag)
 {
     if (cag != NULL)
     {
-        pthread_mutex_destroy(&cag->mMutex);
-        pthread_cond_destroy(&cag->mCondVar);
-        SDL_free(cag);
+		delete cag;
     }
 }
+
+SDLOSXCAGuard::~SDLOSXCAGuard()
+{
+	pthread_mutex_destroy(&mMutex);
+	pthread_cond_destroy(&mCondVar);
+}
+
 
