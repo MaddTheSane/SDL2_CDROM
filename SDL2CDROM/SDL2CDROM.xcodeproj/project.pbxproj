@@ -26,6 +26,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		553DC1D018B2D9DE0048F24C /* SDL2CDROM.exp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.exports; path = SDL2CDROM.exp; sourceTree = "<group>"; };
 		555776EB17EC14650019D008 /* SDL2CDROM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SDL2CDROM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		555776EE17EC14650019D008 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		555776F117EC14650019D008 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -128,6 +129,7 @@
 				555776F617EC14650019D008 /* SDL2CDROM-Info.plist */,
 				555776F717EC14650019D008 /* InfoPlist.strings */,
 				555776FA17EC14650019D008 /* SDL2CDROM-Prefix.pch */,
+				553DC1D018B2D9DE0048F24C /* SDL2CDROM.exp */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
