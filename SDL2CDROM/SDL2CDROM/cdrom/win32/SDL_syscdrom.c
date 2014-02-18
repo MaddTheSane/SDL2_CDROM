@@ -49,14 +49,14 @@ static int SDL_CD_end_position;
 /* The system-dependent CD control functions */
 static const char *SDL_SYS_CDName(int drive);
 static int SDL_SYS_CDOpen(int drive);
-static int SDL_SYS_CDGetTOC(SDL_CD *cdrom);
-static CDstatus SDL_SYS_CDStatus(SDL_CD *cdrom, int *position);
-static int SDL_SYS_CDPlay(SDL_CD *cdrom, int start, int length);
-static int SDL_SYS_CDPause(SDL_CD *cdrom);
-static int SDL_SYS_CDResume(SDL_CD *cdrom);
-static int SDL_SYS_CDStop(SDL_CD *cdrom);
-static int SDL_SYS_CDEject(SDL_CD *cdrom);
-static void SDL_SYS_CDClose(SDL_CD *cdrom);
+static int SDL_SYS_CDGetTOC(SDL2_CD *cdrom);
+static CDstatus SDL_SYS_CDStatus(SDL2_CD *cdrom, int *position);
+static int SDL_SYS_CDPlay(SDL2_CD *cdrom, int start, int length);
+static int SDL_SYS_CDPause(SDL2_CD *cdrom);
+static int SDL_SYS_CDResume(SDL2_CD *cdrom);
+static int SDL_SYS_CDStop(SDL2_CD *cdrom);
+static int SDL_SYS_CDEject(SDL2_CD *cdrom);
+static void SDL_SYS_CDClose(SDL2_CD *cdrom);
 
 
 /* Add a CD-ROM drive to our list of valid drives */
@@ -161,7 +161,7 @@ static int SDL_SYS_CDOpen(int drive)
 	return(drive);
 }
 
-static int SDL_SYS_CDGetTOC(SDL_CD *cdrom)
+static int SDL_SYS_CDGetTOC(SDL2_CD *cdrom)
 {
 	MCI_STATUS_PARMS mci_status;
 	int i, okay;
@@ -231,7 +231,7 @@ static int SDL_SYS_CDGetTOC(SDL_CD *cdrom)
 }
 
 /* Get CD-ROM status */
-static CDstatus SDL_SYS_CDStatus(SDL_CD *cdrom, int *position)
+static CDstatus SDL_SYS_CDStatus(SDL2_CD *cdrom, int *position)
 {
 	CDstatus status;
 	MCI_STATUS_PARMS mci_status;
@@ -297,7 +297,7 @@ static CDstatus SDL_SYS_CDStatus(SDL_CD *cdrom, int *position)
 }
 
 /* Start play */
-static int SDL_SYS_CDPlay(SDL_CD *cdrom, int start, int length)
+static int SDL_SYS_CDPlay(SDL2_CD *cdrom, int start, int length)
 {
 	MCI_PLAY_PARMS mci_play;
 	int m, s, f;
@@ -314,7 +314,7 @@ static int SDL_SYS_CDPlay(SDL_CD *cdrom, int start, int length)
 }
 
 /* Pause play */
-static int SDL_SYS_CDPause(SDL_CD *cdrom)
+static int SDL_SYS_CDPause(SDL2_CD *cdrom)
 {
 #ifdef BROKEN_MCI_PAUSE
 	SDL_paused[cdrom->id] = 1;
@@ -323,7 +323,7 @@ static int SDL_SYS_CDPause(SDL_CD *cdrom)
 }
 
 /* Resume play */
-static int SDL_SYS_CDResume(SDL_CD *cdrom)
+static int SDL_SYS_CDResume(SDL2_CD *cdrom)
 {
 #ifdef BROKEN_MCI_PAUSE
 	MCI_STATUS_PARMS mci_status;
@@ -353,19 +353,19 @@ static int SDL_SYS_CDResume(SDL_CD *cdrom)
 }
 
 /* Stop play */
-static int SDL_SYS_CDStop(SDL_CD *cdrom)
+static int SDL_SYS_CDStop(SDL2_CD *cdrom)
 {
 	return(SDL_SYS_CDioctl(cdrom->id, MCI_STOP, MCI_WAIT, NULL));
 }
 
 /* Eject the CD-ROM */
-static int SDL_SYS_CDEject(SDL_CD *cdrom)
+static int SDL_SYS_CDEject(SDL2_CD *cdrom)
 {
 	return(SDL_SYS_CDioctl(cdrom->id, MCI_SET, MCI_SET_DOOR_OPEN, NULL));
 }
 
 /* Close the CD-ROM handle */
-static void SDL_SYS_CDClose(SDL_CD *cdrom)
+static void SDL_SYS_CDClose(SDL2_CD *cdrom)
 {
 	SDL_SYS_CDioctl(cdrom->id, MCI_CLOSE, MCI_WAIT, NULL);
 }

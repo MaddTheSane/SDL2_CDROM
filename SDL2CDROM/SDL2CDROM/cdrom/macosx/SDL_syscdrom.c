@@ -42,19 +42,19 @@ static int             currentDrive; /* Only allow 1 drive in use at a time */
 
 static const char *SDL_SYS_CDName   (int drive);
 static int         SDL_SYS_CDOpen   (int drive);
-static int         SDL_SYS_CDGetTOC (SDL_CD *cdrom);
-static CDstatus    SDL_SYS_CDStatus (SDL_CD *cdrom, int *position);
-static int         SDL_SYS_CDPlay   (SDL_CD *cdrom, int start, int length);
-static int         SDL_SYS_CDPause  (SDL_CD *cdrom);
-static int         SDL_SYS_CDResume (SDL_CD *cdrom);
-static int         SDL_SYS_CDStop   (SDL_CD *cdrom);
-static int         SDL_SYS_CDEject  (SDL_CD *cdrom);
-static void        SDL_SYS_CDClose  (SDL_CD *cdrom);
+static int         SDL_SYS_CDGetTOC (SDL2_CD *cdrom);
+static CDstatus    SDL_SYS_CDStatus (SDL2_CD *cdrom, int *position);
+static int         SDL_SYS_CDPlay   (SDL2_CD *cdrom, int start, int length);
+static int         SDL_SYS_CDPause  (SDL2_CD *cdrom);
+static int         SDL_SYS_CDResume (SDL2_CD *cdrom);
+static int         SDL_SYS_CDStop   (SDL2_CD *cdrom);
+static int         SDL_SYS_CDEject  (SDL2_CD *cdrom);
+static void        SDL_SYS_CDClose  (SDL2_CD *cdrom);
 
 #pragma mark -- Helper Functions --
 
 /* Read a list of tracks from the volume */
-static int LoadTracks (SDL_CD *cdrom)
+static int LoadTracks (SDL2_CD *cdrom)
 {
     /* Check if tracks are already loaded */
     if  ( tracks[cdrom->id] != NULL )
@@ -75,7 +75,7 @@ static int LoadTracks (SDL_CD *cdrom)
 }
 
 /* Find a file for a given start frame and length */
-static FSRef* GetFileForOffset (SDL_CD *cdrom, int start, int length,  int *outStartFrame, int *outStopFrame)
+static FSRef* GetFileForOffset (SDL2_CD *cdrom, int start, int length,  int *outStartFrame, int *outStopFrame)
 {
     int i;
     
@@ -110,7 +110,7 @@ static FSRef* GetFileForOffset (SDL_CD *cdrom, int start, int length,  int *outS
 }
 
 /* Setup another file for playback, or stop playback (called from another thread) */
-static void CompletionProc (SDL_CD *cdrom)
+static void CompletionProc (SDL2_CD *cdrom)
 {
     
     Lock ();
@@ -294,7 +294,7 @@ static int SDL_SYS_CDOpen (int drive)
 }
 
 /* Get the table of contents */
-static int SDL_SYS_CDGetTOC (SDL_CD *cdrom)
+static int SDL_SYS_CDGetTOC (SDL2_CD *cdrom)
 {
     if (fakeCD) {
         SDL_SetError (kErrorFakeDevice);
@@ -314,7 +314,7 @@ static int SDL_SYS_CDGetTOC (SDL_CD *cdrom)
 }
 
 /* Get CD-ROM status */
-static CDstatus SDL_SYS_CDStatus (SDL_CD *cdrom, int *position)
+static CDstatus SDL_SYS_CDStatus (SDL2_CD *cdrom, int *position)
 {
     if (position) {
         int trackFrame;
@@ -330,7 +330,7 @@ static CDstatus SDL_SYS_CDStatus (SDL_CD *cdrom, int *position)
 }
 
 /* Start playback */
-static int SDL_SYS_CDPlay(SDL_CD *cdrom, int start, int length)
+static int SDL_SYS_CDPlay(SDL2_CD *cdrom, int start, int length)
 {
     int startFrame, stopFrame;
     FSRef *ref;
@@ -373,7 +373,7 @@ static int SDL_SYS_CDPlay(SDL_CD *cdrom, int start, int length)
 }
 
 /* Pause playback */
-static int SDL_SYS_CDPause(SDL_CD *cdrom)
+static int SDL_SYS_CDPause(SDL2_CD *cdrom)
 {
     if (fakeCD) {
         SDL_SetError (kErrorFakeDevice);
@@ -395,7 +395,7 @@ static int SDL_SYS_CDPause(SDL_CD *cdrom)
 }
 
 /* Resume playback */
-static int SDL_SYS_CDResume(SDL_CD *cdrom)
+static int SDL_SYS_CDResume(SDL2_CD *cdrom)
 {
     if (fakeCD) {
         SDL_SetError (kErrorFakeDevice);
@@ -417,7 +417,7 @@ static int SDL_SYS_CDResume(SDL_CD *cdrom)
 }
 
 /* Stop playback */
-static int SDL_SYS_CDStop(SDL_CD *cdrom)
+static int SDL_SYS_CDStop(SDL2_CD *cdrom)
 {
     if (fakeCD) {
         SDL_SetError (kErrorFakeDevice);
@@ -444,7 +444,7 @@ static int SDL_SYS_CDStop(SDL_CD *cdrom)
 }
 
 /* Eject the CD-ROM (Unmount the volume) */
-static int SDL_SYS_CDEject(SDL_CD *cdrom)
+static int SDL_SYS_CDEject(SDL2_CD *cdrom)
 {
     OSStatus err;
     pid_t dissenter;
@@ -490,7 +490,7 @@ static int SDL_SYS_CDEject(SDL_CD *cdrom)
 }
 
 /* Close the CD-ROM */
-static void SDL_SYS_CDClose(SDL_CD *cdrom)
+static void SDL_SYS_CDClose(SDL2_CD *cdrom)
 {
     currentDrive = -1;
     return;

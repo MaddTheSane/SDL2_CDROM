@@ -30,16 +30,16 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <AudioUnit/AudioUnit.h>
 
-#include "SDL.h"
-#include "SDL_thread.h"
-#include "SDL_mutex.h"
-#include "SDL_cdrom.h"
+#include <SDL.h>
+#include <SDL_thread.h>
+#include <SDL_mutex.h>
+#include "SDL2_cdrom.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef void (*CDPlayerCompletionProc)(SDL_CD *cdrom) ;
+typedef void (*CDPlayerCompletionProc)(SDL2_CD *cdrom) ;
 
 void     Lock ();
 void     Unlock();
@@ -47,8 +47,8 @@ int      LoadFile (const FSRef *ref, int startFrame, int endFrame); /* pass -1 t
 int      ReleaseFile ();
 int      PlayFile  ();
 int      PauseFile ();
-void     SetCompletionProc (CDPlayerCompletionProc proc, SDL_CD *cdrom);
-int      ReadTOCData (FSVolumeRefNum theVolume, SDL_CD *theCD);
+void     SetCompletionProc (CDPlayerCompletionProc proc, SDL2_CD *cdrom);
+int      ReadTOCData (FSVolumeRefNum theVolume, SDL2_CD *theCD);
 int      ListTrackFiles (FSVolumeRefNum theVolume, FSRef *trackFiles, int numTracks);
 int      DetectAudioCDVolumes (FSVolumeRefNum *volumes, int numVolumes);
 int      GetCurrentFrame ();

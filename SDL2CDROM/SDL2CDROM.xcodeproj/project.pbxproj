@@ -7,10 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5530781B18B30F1D009714A4 /* SDL2CDROM.h in Headers */ = {isa = PBXBuildFile; fileRef = 5530781A18B30F1C009714A4 /* SDL2CDROM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		555776EF17EC14650019D008 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 555776EE17EC14650019D008 /* Cocoa.framework */; };
 		555776F917EC14650019D008 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 555776F717EC14650019D008 /* InfoPlist.strings */; };
 		5557771A17EC14DD0019D008 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5557771917EC14DD0019D008 /* SDL2.framework */; };
-		5557771C17EC154F0019D008 /* SDL_cdrom.h in Headers */ = {isa = PBXBuildFile; fileRef = 5557771B17EC154F0019D008 /* SDL_cdrom.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5557771C17EC154F0019D008 /* SDL2_cdrom.h in Headers */ = {isa = PBXBuildFile; fileRef = 5557771B17EC154F0019D008 /* SDL2_cdrom.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5557774717EC15A90019D008 /* SDL_cdrom.c in Sources */ = {isa = PBXBuildFile; fileRef = 5557774317EC15920019D008 /* SDL_cdrom.c */; };
 		5557774817EC15AD0019D008 /* SDL_syscdrom.h in Headers */ = {isa = PBXBuildFile; fileRef = 5557774417EC15920019D008 /* SDL_syscdrom.h */; };
 		5557774917EC15B60019D008 /* AudioFilePlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5557773017EC15920019D008 /* AudioFilePlayer.cpp */; };
@@ -26,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5530781A18B30F1C009714A4 /* SDL2CDROM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL2CDROM.h; sourceTree = "<group>"; };
 		553DC1D018B2D9DE0048F24C /* SDL2CDROM.exp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.exports; path = SDL2CDROM.exp; sourceTree = "<group>"; };
 		555776EB17EC14650019D008 /* SDL2CDROM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SDL2CDROM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		555776EE17EC14650019D008 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -37,7 +39,7 @@
 		555776FA17EC14650019D008 /* SDL2CDROM-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SDL2CDROM-Prefix.pch"; sourceTree = "<group>"; };
 		5557770317EC14650019D008 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		5557771917EC14DD0019D008 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
-		5557771B17EC154F0019D008 /* SDL_cdrom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL_cdrom.h; sourceTree = "<group>"; };
+		5557771B17EC154F0019D008 /* SDL2_cdrom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL2_cdrom.h; sourceTree = "<group>"; };
 		5557772117EC15920019D008 /* SDL_syscdrom.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SDL_syscdrom.cc; sourceTree = "<group>"; };
 		5557772317EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; };
 		5557772517EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; };
@@ -116,7 +118,8 @@
 		555776F417EC14650019D008 /* SDL2CDROM */ = {
 			isa = PBXGroup;
 			children = (
-				5557771B17EC154F0019D008 /* SDL_cdrom.h */,
+				5557771B17EC154F0019D008 /* SDL2_cdrom.h */,
+				5530781A18B30F1C009714A4 /* SDL2CDROM.h */,
 				5557771D17EC15920019D008 /* cdrom */,
 				555776F517EC14650019D008 /* Supporting Files */,
 			);
@@ -239,11 +242,12 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5530781B18B30F1D009714A4 /* SDL2CDROM.h in Headers */,
 				5557774D17EC15B60019D008 /* CDPlayer.h in Headers */,
 				5557775117EC15B60019D008 /* SDLOSXCAGuard.h in Headers */,
 				5557774817EC15AD0019D008 /* SDL_syscdrom.h in Headers */,
 				5557774F17EC15B60019D008 /* SDL_syscdrom_c.h in Headers */,
-				5557771C17EC154F0019D008 /* SDL_cdrom.h in Headers */,
+				5557771C17EC154F0019D008 /* SDL2_cdrom.h in Headers */,
 				5557774A17EC15B60019D008 /* AudioFilePlayer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

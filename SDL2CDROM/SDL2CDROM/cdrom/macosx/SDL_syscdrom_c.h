@@ -127,7 +127,7 @@
 ************************************************************************************/
 
 
-#include "SDL_cdrom.h"
+#include "SDL2_cdrom.h"
 #include "../SDL_syscdrom.h"
 
 #include "CDPlayer.h"

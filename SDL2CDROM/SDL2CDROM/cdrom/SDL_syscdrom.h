@@ -35,30 +35,30 @@ extern struct CDcaps {
 	   The TOC information should be stored in the cdrom structure.
 	   This function should return 0 on success, or -1 on error.
 	 */
-	int (*GetTOC)(SDL_CD *cdrom);
+	int (*GetTOC)(SDL2_CD *cdrom);
 
 	/* Return the current status and play position, in frames, of the
 	   drive.  'position' may be NULL, and if so, should be ignored.
 	 */
-	CDstatus (*Status)(SDL_CD *cdrom, int *position);
+	CDstatus (*Status)(SDL2_CD *cdrom, int *position);
 
 	/* Play from frame 'start' to 'start+len' */
-	int (*Play)(SDL_CD *cdrom, int start, int len); 
+	int (*Play)(SDL2_CD *cdrom, int start, int len); 
 
 	/* Pause play */
-	int (*Pause)(SDL_CD *cdrom);
+	int (*Pause)(SDL2_CD *cdrom);
 
 	/* Resume play */
-	int (*Resume)(SDL_CD *cdrom);
+	int (*Resume)(SDL2_CD *cdrom);
 
 	/* Stop play */
-	int (*Stop)(SDL_CD *cdrom);
+	int (*Stop)(SDL2_CD *cdrom);
 
 	/* Eject the current disk */
-	int (*Eject)(SDL_CD *cdrom);
+	int (*Eject)(SDL2_CD *cdrom);
 
 	/* Close the specified drive */
-	void (*Close)(SDL_CD *cdrom);
+	void (*Close)(SDL2_CD *cdrom);
 } SDL_CDcaps;
 
 /* The number of available CD-ROM drives on the system */

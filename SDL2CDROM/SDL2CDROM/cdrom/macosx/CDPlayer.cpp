@@ -59,7 +59,7 @@ static AudioFilePlayer* thePlayer = NULL;
 static CDPlayerCompletionProc   completionProc = NULL;
 static SDL_mutex       *apiMutex = NULL;
 static SDL_sem         *callbackSem;
-static SDL_CD*          theCDROM;
+static SDL2_CD*          theCDROM;
 
 /*///////////////////////////////////////////////////////////////////////////
     Prototypes
@@ -130,7 +130,7 @@ int DetectAudioCDVolumes(FSVolumeRefNum *volumes, int numVolumes)
     return cdVolumeCount;
 }
 
-int ReadTOCData (FSVolumeRefNum theVolume, SDL_CD *theCD)
+int ReadTOCData (FSVolumeRefNum theVolume, SDL2_CD *theCD)
 {
     HFSUniStr255      dataForkName;
     OSStatus          theErr;
@@ -272,7 +272,7 @@ int ReadTOCData (FSVolumeRefNum theVolume, SDL_CD *theCD)
                 startBlock    = (CFNumberRef)  CFDictionaryGetValue (theTrackDict, CFSTR(kStartBlockKeyString));
                 isDataTrack   = (CFBooleanRef) CFDictionaryGetValue (theTrackDict, CFSTR(kDataKeyString));
                                                         
-                /* Fill in the SDL_CD struct */
+                /* Fill in the SDL2_CD struct */
                 int idx = theCD->numtracks++;
 
                 CFNumberGetValue (trackNumber, kCFNumberSInt32Type, &value);
@@ -513,7 +513,7 @@ bail:
     return result;
 }
 
-void SetCompletionProc (CDPlayerCompletionProc proc, SDL_CD *cdrom)
+void SetCompletionProc (CDPlayerCompletionProc proc, SDL2_CD *cdrom)
 {
     assert(thePlayer != NULL);
 

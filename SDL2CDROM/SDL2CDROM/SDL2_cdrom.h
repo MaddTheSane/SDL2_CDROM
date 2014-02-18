@@ -31,7 +31,16 @@
 #include <SDL_stdinc.h>
 #include <SDL_error.h>
 
-#include <begin_code.h>
+//#include <begin_code.h>
+
+#ifndef SDL2CDCALL
+#if defined(__WIN32__) && !defined(__GNUC__)
+#define SDL2CDCALL __cdecl
+#else
+#define SDL2CDCALL
+#endif
+#endif /* SDLCALL */
+
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
 extern "C" {
@@ -67,16 +76,16 @@ typedef enum {
 /** Given a status, returns true if there's a disk in the drive */
 #define CD_INDRIVE(status)	((int)(status) > 0)
 
-typedef struct SDL_CDtrack {
+typedef struct SDL2_CDtrack {
 	Uint8 id;		/**< Track number */
 	Uint8 type;		/**< Data or audio track */
 	Uint16 unused;
 	Uint32 length;		/**< Length, in frames, of this track */
 	Uint32 offset;		/**< Offset, in frames, from start of disk */
-} SDL_CDtrack;
+} SDL2_CDtrack;
 
 /** This structure is only current as of the last call to SDL_CDStatus() */
-typedef struct SDL_CD {
+typedef struct SDL2_CD {
 	int id;			/**< Private drive identifier */
 	CDstatus status;	/**< Current drive status */
 
@@ -85,9 +94,9 @@ typedef struct SDL_CD {
 	int numtracks;		/**< Number of tracks on disk */
 	int cur_track;		/**< Current track position */
 	int cur_frame;		/**< Current frame offset within current track */
-	SDL_CDtrack track[SDL_MAX_TRACKS+1];
+	SDL2_CDtrack track[SDL_MAX_TRACKS+1];
         /*@}*/
-} SDL_CD;
+} SDL2_CD;
 
 /** @name Frames / MSF Conversion Functions
  *  Conversion functions from frames to Minute/Second/Frames and vice versa
@@ -111,7 +120,7 @@ typedef struct SDL_CD {
  *  Returns the number of CD-ROM drives on the system, or -1 if
  *  SDL_Init() has not been called with the SDL_INIT_CDROM flag.
  */
-extern DECLSPEC int SDLCALL SDL_CDNumDrives(void);
+extern DECLSPEC int SDL2CDCALL SDL_CDNumDrives(void);
 
 /**
  *  Returns a human-readable, system-dependent identifier for the CD-ROM.
@@ -120,7 +129,7 @@ extern DECLSPEC int SDLCALL SDL_CDNumDrives(void);
  *   - "E:"
  *   - "/dev/disk/ide/1/master"
  */
-extern DECLSPEC const char * SDLCALL SDL_CDName(int drive);
+extern DECLSPEC const char * SDL2CDCALL SDL_CDName(int drive);
 
 /**
  *  Opens a CD-ROM drive for access.  It returns a drive handle on success,
@@ -129,14 +138,14 @@ extern DECLSPEC const char * SDLCALL SDL_CDName(int drive);
  *  CD-ROM handle.
  *  Drives are numbered starting with 0.  Drive 0 is the system default CD-ROM.
  */
-extern DECLSPEC SDL_CD * SDLCALL SDL_CDOpen(int drive);
+extern DECLSPEC SDL2_CD * SDL2CDCALL SDL_CDOpen(int drive);
 
 /**
  *  This function returns the current status of the given drive.
  *  If the drive has a CD in it, the table of contents of the CD and current
- *  play position of the CD will be stored in the SDL_CD structure.
+ *  play position of the CD will be stored in the SDL2_CD structure.
  */
-extern DECLSPEC CDstatus SDLCALL SDL_CDStatus(SDL_CD *cdrom);
+extern DECLSPEC CDstatus SDL2CDCALL SDL_CDStatus(SDL2_CD *cdrom);
 
 /**
  *  Play the given CD starting at 'start_track' and 'start_frame' for 'ntracks'
@@ -160,43 +169,43 @@ extern DECLSPEC CDstatus SDLCALL SDL_CDStatus(SDL_CD *cdrom);
  *
  *  @return This function returns 0, or -1 if there was an error.
  */
-extern DECLSPEC int SDLCALL SDL_CDPlayTracks(SDL_CD *cdrom,
+extern DECLSPEC int SDL2CDCALL SDL_CDPlayTracks(SDL2_CD *cdrom,
 		int start_track, int start_frame, int ntracks, int nframes);
 
 /**
  *  Play the given CD starting at 'start' frame for 'length' frames.
  *  @return It returns 0, or -1 if there was an error.
  */
-extern DECLSPEC int SDLCALL SDL_CDPlay(SDL_CD *cdrom, int start, int length);
+extern DECLSPEC int SDL2CDCALL SDL_CDPlay(SDL2_CD *cdrom, int start, int length);
 
 /** Pause play
  *  @return returns 0, or -1 on error
  */
-extern DECLSPEC int SDLCALL SDL_CDPause(SDL_CD *cdrom);
+extern DECLSPEC int SDL2CDCALL SDL_CDPause(SDL2_CD *cdrom);
 
 /** Resume play
  *  @return returns 0, or -1 on error
  */
-extern DECLSPEC int SDLCALL SDL_CDResume(SDL_CD *cdrom);
+extern DECLSPEC int SDL2CDCALL SDL_CDResume(SDL2_CD *cdrom);
 
 /** Stop play
  *  @return returns 0, or -1 on error
  */
-extern DECLSPEC int SDLCALL SDL_CDStop(SDL_CD *cdrom);
+extern DECLSPEC int SDL2CDCALL SDL_CDStop(SDL2_CD *cdrom);
 
 /** Eject CD-ROM
  *  @return returns 0, or -1 on error
  */
-extern DECLSPEC int SDLCALL SDL_CDEject(SDL_CD *cdrom);
+extern DECLSPEC int SDL2CDCALL SDL_CDEject(SDL2_CD *cdrom);
 
 /** Closes the handle for the CD-ROM drive */
-extern DECLSPEC void SDLCALL SDL_CDClose(SDL_CD *cdrom);
+extern DECLSPEC void SDL2CDCALL SDL_CDClose(SDL2_CD *cdrom);
 
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
 }
 #endif
-#include <close_code.h>
+//#include <close_code.h>
 
 #endif /* _SDL_video_h */

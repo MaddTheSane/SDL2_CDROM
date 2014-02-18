@@ -75,14 +75,14 @@ static dev_t SDL_cdmode[MAX_DRIVES];
 /* The system-dependent CD control functions */
 static const char *SDL_SYS_CDName(int drive);
 static int SDL_SYS_CDOpen(int drive);
-static int SDL_SYS_CDGetTOC(SDL_CD *cdrom);
-static CDstatus SDL_SYS_CDStatus(SDL_CD *cdrom, int *position);
-static int SDL_SYS_CDPlay(SDL_CD *cdrom, int start, int length);
-static int SDL_SYS_CDPause(SDL_CD *cdrom);
-static int SDL_SYS_CDResume(SDL_CD *cdrom);
-static int SDL_SYS_CDStop(SDL_CD *cdrom);
-static int SDL_SYS_CDEject(SDL_CD *cdrom);
-static void SDL_SYS_CDClose(SDL_CD *cdrom);
+static int SDL_SYS_CDGetTOC(SDL2_CD *cdrom);
+static CDstatus SDL_SYS_CDStatus(SDL2_CD *cdrom, int *position);
+static int SDL_SYS_CDPlay(SDL2_CD *cdrom, int start, int length);
+static int SDL_SYS_CDPause(SDL2_CD *cdrom);
+static int SDL_SYS_CDResume(SDL2_CD *cdrom);
+static int SDL_SYS_CDStop(SDL2_CD *cdrom);
+static int SDL_SYS_CDEject(SDL2_CD *cdrom);
+static void SDL_SYS_CDClose(SDL2_CD *cdrom);
 
 typedef	struct	scsi_cdb cdb_t;
 
@@ -340,7 +340,7 @@ static int SDL_SYS_CDOpen(int drive)
 	return(open(SDL_cdlist[drive], O_RDONLY | O_NONBLOCK | O_EXCL, 0));
 }
 
-static int SDL_SYS_CDGetTOC(SDL_CD *cdrom)
+static int SDL_SYS_CDGetTOC(SDL2_CD *cdrom)
 	{
 	u_char cdb[10], buf[4], *p, *toc;
 	struct scsi_user_cdb sus;
@@ -396,7 +396,7 @@ static int SDL_SYS_CDGetTOC(SDL_CD *cdrom)
 	}
 
 /* Get CD-ROM status */
-static CDstatus SDL_SYS_CDStatus(SDL_CD *cdrom, int *position)
+static CDstatus SDL_SYS_CDStatus(SDL2_CD *cdrom, int *position)
 	{
 	CDstatus status;
 	u_char	cdb[10], buf[16];
@@ -452,7 +452,7 @@ static CDstatus SDL_SYS_CDStatus(SDL_CD *cdrom, int *position)
 	}
 
 /* Start play */
-static int SDL_SYS_CDPlay(SDL_CD *cdrom, int start, int length)
+static int SDL_SYS_CDPlay(SDL2_CD *cdrom, int start, int length)
 	{
 	u_char	cdb[10];
 	int	sts, minute, second, frame, eminute, esecond, eframe;
@@ -473,7 +473,7 @@ static int SDL_SYS_CDPlay(SDL_CD *cdrom, int start, int length)
 	}
 
 static	int
-pauseresume(SDL_CD *cdrom, int flag)
+pauseresume(SDL2_CD *cdrom, int flag)
 	{
 	u_char	cdb[10];
 	struct	scsi_user_cdb sus;
@@ -485,19 +485,19 @@ pauseresume(SDL_CD *cdrom, int flag)
 	}
 
 /* Pause play */
-static int SDL_SYS_CDPause(SDL_CD *cdrom)
+static int SDL_SYS_CDPause(SDL2_CD *cdrom)
 {
 	return(pauseresume(cdrom, 0));
 }
 
 /* Resume play */
-static int SDL_SYS_CDResume(SDL_CD *cdrom)
+static int SDL_SYS_CDResume(SDL2_CD *cdrom)
 {
 	return(pauseresume(cdrom, 1));
 }
 
 /* Stop play */
-static int SDL_SYS_CDStop(SDL_CD *cdrom)
+static int SDL_SYS_CDStop(SDL2_CD *cdrom)
 {
 	u_char cdb[6];
 	struct	scsi_user_cdb sus;
@@ -509,7 +509,7 @@ static int SDL_SYS_CDStop(SDL_CD *cdrom)
 }
 
 /* Eject the CD-ROM */
-static int SDL_SYS_CDEject(SDL_CD *cdrom)
+static int SDL_SYS_CDEject(SDL2_CD *cdrom)
 {
 	u_char cdb[6];
 	struct	scsi_user_cdb sus;
@@ -522,7 +522,7 @@ static int SDL_SYS_CDEject(SDL_CD *cdrom)
 }
 
 /* Close the CD-ROM handle */
-static void SDL_SYS_CDClose(SDL_CD *cdrom)
+static void SDL_SYS_CDClose(SDL2_CD *cdrom)
 	{
 	close(cdrom->id);
 	}

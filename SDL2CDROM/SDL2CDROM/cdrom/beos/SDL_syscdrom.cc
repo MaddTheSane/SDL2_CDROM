@@ -67,14 +67,14 @@ static char *SDL_cdlist[MAX_DRIVES];
 /* The system-dependent CD control functions */
 static const char *SDL_SYS_CDName(int drive);
 static int SDL_SYS_CDOpen(int drive);
-static int SDL_SYS_CDGetTOC(SDL_CD *cdrom);
-static CDstatus SDL_SYS_CDStatus(SDL_CD *cdrom, int *position);
-static int SDL_SYS_CDPlay(SDL_CD *cdrom, int start, int length);
-static int SDL_SYS_CDPause(SDL_CD *cdrom);
-static int SDL_SYS_CDResume(SDL_CD *cdrom);
-static int SDL_SYS_CDStop(SDL_CD *cdrom);
-static int SDL_SYS_CDEject(SDL_CD *cdrom);
-static void SDL_SYS_CDClose(SDL_CD *cdrom);
+static int SDL_SYS_CDGetTOC(SDL2_CD *cdrom);
+static CDstatus SDL_SYS_CDStatus(SDL2_CD *cdrom, int *position);
+static int SDL_SYS_CDPlay(SDL2_CD *cdrom, int start, int length);
+static int SDL_SYS_CDPause(SDL2_CD *cdrom);
+static int SDL_SYS_CDResume(SDL2_CD *cdrom);
+static int SDL_SYS_CDStop(SDL2_CD *cdrom);
+static int SDL_SYS_CDEject(SDL2_CD *cdrom);
+static void SDL_SYS_CDClose(SDL2_CD *cdrom);
 int try_dir(const char *directory);
 
 
@@ -280,7 +280,7 @@ static int SDL_SYS_CDOpen(int drive)
 	return(drive);
 }
 
-static int SDL_SYS_CDGetTOC(SDL_CD *cdrom)
+static int SDL_SYS_CDGetTOC(SDL2_CD *cdrom)
 {
 	int i;
 	scsi_toc toc;
@@ -312,7 +312,7 @@ static int SDL_SYS_CDGetTOC(SDL_CD *cdrom)
 }
 
 /* Get CD-ROM status */
-static CDstatus SDL_SYS_CDStatus(SDL_CD *cdrom, int *position)
+static CDstatus SDL_SYS_CDStatus(SDL2_CD *cdrom, int *position)
 {
 	CDstatus status;
 	int fd;
@@ -346,7 +346,7 @@ static CDstatus SDL_SYS_CDStatus(SDL_CD *cdrom, int *position)
 }
 
 /* Start play */
-static int SDL_SYS_CDPlay(SDL_CD *cdrom, int start, int length)
+static int SDL_SYS_CDPlay(SDL2_CD *cdrom, int start, int length)
 {
 	int okay;
 	int fd;
@@ -366,31 +366,31 @@ static int SDL_SYS_CDPlay(SDL_CD *cdrom, int start, int length)
 }
 
 /* Pause play */
-static int SDL_SYS_CDPause(SDL_CD *cdrom)
+static int SDL_SYS_CDPause(SDL2_CD *cdrom)
 {
 	return(SDL_SYS_CDioctl(cdrom->id, B_SCSI_PAUSE_AUDIO, 0));
 }
 
 /* Resume play */
-static int SDL_SYS_CDResume(SDL_CD *cdrom)
+static int SDL_SYS_CDResume(SDL2_CD *cdrom)
 {
 	return(SDL_SYS_CDioctl(cdrom->id, B_SCSI_RESUME_AUDIO, 0));
 }
 
 /* Stop play */
-static int SDL_SYS_CDStop(SDL_CD *cdrom)
+static int SDL_SYS_CDStop(SDL2_CD *cdrom)
 {
 	return(SDL_SYS_CDioctl(cdrom->id, B_SCSI_STOP_AUDIO, 0));
 }
 
 /* Eject the CD-ROM */
-static int SDL_SYS_CDEject(SDL_CD *cdrom)
+static int SDL_SYS_CDEject(SDL2_CD *cdrom)
 {
 	return(SDL_SYS_CDioctl(cdrom->id, B_SCSI_EJECT, 0));
 }
 
 /* Close the CD-ROM handle */
-static void SDL_SYS_CDClose(SDL_CD *cdrom)
+static void SDL_SYS_CDClose(SDL2_CD *cdrom)
 {
 	close(cdrom->id);
 }
