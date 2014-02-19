@@ -84,7 +84,7 @@ typedef struct SDL2_CDtrack {
 	Uint32 offset;		/**< Offset, in frames, from start of disk */
 } SDL2_CDtrack;
 
-/** This structure is only current as of the last call to SDL_CDStatus() */
+/** This structure is only current as of the last call to SDL2_CDStatus() */
 typedef struct SDL2_CD {
 	int id;			/**< Private drive identifier */
 	CDstatus status;	/**< Current drive status */
@@ -130,7 +130,7 @@ extern DECLSPEC void SDL2CDCALL SDL2_CD_close(void);
  *  Returns the number of CD-ROM drives on the system, or -1 if
  *  SDL_Init() has not been called with the SDL_INIT_CDROM flag.
  */
-extern DECLSPEC int SDL2CDCALL SDL_CDNumDrives(void);
+extern DECLSPEC int SDL2CDCALL SDL2_CDNumDrives(void);
 
 /**
  *  Returns a human-readable, system-dependent identifier for the CD-ROM.
@@ -139,7 +139,7 @@ extern DECLSPEC int SDL2CDCALL SDL_CDNumDrives(void);
  *   - "E:"
  *   - "/dev/disk/ide/1/master"
  */
-extern DECLSPEC const char * SDL2CDCALL SDL_CDName(int drive);
+extern DECLSPEC const char * SDL2CDCALL SDL2_CDName(int drive);
 
 /**
  *  Opens a CD-ROM drive for access.  It returns a drive handle on success,
@@ -148,32 +148,32 @@ extern DECLSPEC const char * SDL2CDCALL SDL_CDName(int drive);
  *  CD-ROM handle.
  *  Drives are numbered starting with 0.  Drive 0 is the system default CD-ROM.
  */
-extern DECLSPEC SDL2_CD * SDL2CDCALL SDL_CDOpen(int drive);
+extern DECLSPEC SDL2_CD * SDL2CDCALL SDL2_CDOpen(int drive);
 
 /**
  *  This function returns the current status of the given drive.
  *  If the drive has a CD in it, the table of contents of the CD and current
  *  play position of the CD will be stored in the SDL2_CD structure.
  */
-extern DECLSPEC CDstatus SDL2CDCALL SDL_CDStatus(SDL2_CD *cdrom);
+extern DECLSPEC CDstatus SDL2CDCALL SDL2_CDStatus(SDL2_CD *cdrom);
 
 /**
  *  Play the given CD starting at 'start_track' and 'start_frame' for 'ntracks'
  *  tracks and 'nframes' frames.  If both 'ntrack' and 'nframe' are 0, play 
  *  until the end of the CD.  This function will skip data tracks.
- *  This function should only be called after calling SDL_CDStatus() to 
+ *  This function should only be called after calling SDL2_CDStatus() to 
  *  get track information about the CD.
  *  For example:
  *      @code
  *	// Play entire CD:
- *	if ( CD_INDRIVE(SDL_CDStatus(cdrom)) )
+ *	if ( CD_INDRIVE(SDL2_CDStatus(cdrom)) )
  *		SDL_CDPlayTracks(cdrom, 0, 0, 0, 0);
  *	// Play last track:
- *	if ( CD_INDRIVE(SDL_CDStatus(cdrom)) ) {
+ *	if ( CD_INDRIVE(SDL2_CDStatus(cdrom)) ) {
  *		SDL_CDPlayTracks(cdrom, cdrom->numtracks-1, 0, 0, 0);
  *	}
  *	// Play first and second track and 10 seconds of third track:
- *	if ( CD_INDRIVE(SDL_CDStatus(cdrom)) )
+ *	if ( CD_INDRIVE(SDL2_CDStatus(cdrom)) )
  *		SDL_CDPlayTracks(cdrom, 0, 0, 2, 10);
  *      @endcode
  *

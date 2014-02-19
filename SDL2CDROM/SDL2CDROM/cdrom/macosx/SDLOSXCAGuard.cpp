@@ -70,11 +70,10 @@
     Includes
   =============================================================================*/
 
-/*
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-*/
 #include "SDL_stdinc.h"
 
 /*#define NDEBUG 1*/
@@ -95,8 +94,7 @@ bool SDLOSXCAGuard::Lock()
 {
     int theAnswer = 0;
     
-    if(pthread_self() != mOwner)
-    {
+    if (pthread_self() != mOwner) {
         OSStatus theError = pthread_mutex_lock(&mMutex);
         (void)theError;
         assert(theError == 0);
@@ -180,8 +178,7 @@ SDLOSXCAGuard::SDLOSXCAGuard()
 
 void delete_SDLOSXCAGuard(SDLOSXCAGuard *cag)
 {
-    if (cag != NULL)
-    {
+    if (cag != NULL) {
 		delete cag;
     }
 }
@@ -191,5 +188,3 @@ SDLOSXCAGuard::~SDLOSXCAGuard()
 	pthread_mutex_destroy(&mMutex);
 	pthread_cond_destroy(&mCondVar);
 }
-
-

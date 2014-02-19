@@ -38,13 +38,13 @@
     2. You can only open and control 1 CD-ROM device at a time. (Challenging to fix,
        due to extensive code restructuring)
     
-    3. The status reported by SDL_CDStatus only changes to from CD_PLAYING to CD_STOPPED in
+    3. The status reported by SDL2_CDStatus only changes to from CD_PLAYING to CD_STOPPED in
        1-second intervals (because the audio is buffered in 1-second chunks) If
        the audio data is less than 1 second, the remainder is filled with silence.
        
        If you need to play sequences back-to-back that are less that 1 second long,
        use the frame position to determine when to play the next sequence, instead
-       of SDL_CDStatus.
+       of SDL2_CDStatus.
        
        This may be possible to fix with a clever usage of the AudioUnit API.
        

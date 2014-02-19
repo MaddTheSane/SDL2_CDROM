@@ -78,7 +78,7 @@ static int CheckInit(int check_cdrom, SDL2_CD **cdrom)
 	return(okay);
 }
 
-int SDL_CDNumDrives(void)
+int SDL2_CDNumDrives(void)
 {
 	if ( ! CheckInit(0, NULL) ) {
 		return(-1);
@@ -86,7 +86,7 @@ int SDL_CDNumDrives(void)
 	return(SDL_numcds);
 }
 
-const char *SDL_CDName(int drive)
+const char *SDL2_CDName(int drive)
 {
 	if ( ! CheckInit(0, NULL) ) {
 		return(NULL);
@@ -102,7 +102,7 @@ const char *SDL_CDName(int drive)
 	}
 }
 
-SDL2_CD *SDL_CDOpen(int drive)
+SDL2_CD *SDL2_CDOpen(int drive)
 {
 	struct SDL2_CD *cdrom;
 
@@ -128,7 +128,7 @@ SDL2_CD *SDL_CDOpen(int drive)
 	return(cdrom);
 }
 
-CDstatus SDL_CDStatus(SDL2_CD *cdrom)
+CDstatus SDL2_CDStatus(SDL2_CD *cdrom)
 {
 	CDstatus status;
 	int i;
