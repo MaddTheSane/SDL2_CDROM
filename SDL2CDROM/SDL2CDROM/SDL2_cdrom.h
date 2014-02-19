@@ -117,6 +117,16 @@ typedef struct SDL2_CD {
 /* CD-audio API functions: */
 
 /**
+ *  TODO: documentation
+ */
+extern DECLSPEC int SDL2CDCALL SDL2_CD_init(void);
+
+/**
+ *  TODO: documentation
+ */
+extern DECLSPEC void SDL2CDCALL SDL2_CD_close(void);
+
+/**
  *  Returns the number of CD-ROM drives on the system, or -1 if
  *  SDL_Init() has not been called with the SDL_INIT_CDROM flag.
  */

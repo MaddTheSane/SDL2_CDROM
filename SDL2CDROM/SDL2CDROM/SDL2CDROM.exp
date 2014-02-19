@@ -15,3 +15,5 @@ _SDL_CDResume
 _SDL_CDStop
 _SDL_CDEject
 _SDL_CDClose
+_SDL2_CD_init
+_SDL2_CD_close

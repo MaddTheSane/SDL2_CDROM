@@ -46,7 +46,7 @@ struct CDcaps SDL_CDcaps = {
 };
 int SDL_numcds;
 
-int SDL_CDROMInit(void)
+int SDL2_CD_init(void)
 {
 	int retval;
 
@@ -332,7 +332,7 @@ void SDL_CDClose(SDL2_CD *cdrom)
 	default_cdrom = NULL;
 }
 
-void SDL_CDROMQuit(void)
+void SDL2_CD_close(void)
 {
 	SDL_SYS_CDQuit();
 	SDL_cdinitted = 0;
