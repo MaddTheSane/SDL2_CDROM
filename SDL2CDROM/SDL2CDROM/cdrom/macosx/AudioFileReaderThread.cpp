@@ -34,12 +34,12 @@
 
 #include <list>
 
-/*typedef void *FileData;*/
+/*typedef void *FileData;
 typedef struct S_FileData
 {
     AudioFileManager *obj;
     struct S_FileData *next;
-} FileData;
+} FileData;*/
 
 
 class FileReaderThread {
@@ -55,19 +55,19 @@ public:
     int     mThreadShouldDie;
     
 private:
-    //typedef std::list<AudioFileManager*> FileData;
+    typedef std::list<AudioFileManager*> FileData;
 
-    SDLOSXCAGuard             *mGuard;
-    UInt32              mThreadPriority;
+    SDLOSXCAGuard	*mGuard;
+    UInt32			mThreadPriority;
     
-    int                 mNumReaders;    
-    FileData            *mFileData;
+    int				mNumReaders;
+    FileData		mFileData;
 
 
-    void                        ReadNextChunk();
-    int                         StartFixedPriorityThread();
-    static UInt32               GetThreadBasePriority(pthread_t inThread);
-    static void*                DiskReaderEntry(void *inRefCon);
+    void			ReadNextChunk();
+    int				StartFixedPriorityThread();
+    static UInt32	GetThreadBasePriority(pthread_t inThread);
+    static void*	DiskReaderEntry(void *inRefCon);
 };
 
 SDLOSXCAGuard* FileReaderThread::GetGuard()
@@ -82,20 +82,8 @@ int FileReaderThread::TryNextRead(AudioFileManager* inItem)
     int succeeded = 0;
     if (mGuard->Try(&didLock))
     {
-        /*frt->mFileData.push_back (inItem);*/
+        mFileData.push_back(inItem);
         /* !!! FIXME: this could be faster with a "tail" member. --ryan. */
-        FileData *i = mFileData;
-        FileData *prev = NULL;
-
-        FileData *newfd = (FileData *) SDL_malloc(sizeof (FileData));
-        newfd->obj = inItem;
-        newfd->next = NULL;
-
-        while (i != NULL) { prev = i; i = i->next; }
-        if (prev == NULL)
-            mFileData = newfd;
-        else
-            prev->next = newfd;
 
         mGuard->Notify();
         succeeded = 1;
@@ -123,25 +111,7 @@ void FileReaderThread::RemoveReader (AudioFileManager* inItem)
     {
         int bNeedsRelease = mGuard->Lock();
         
-        /*frt->mFileData.remove (inItem);*/
-        FileData *i = mFileData;
-        FileData *prev = NULL;
-        while (i != NULL)
-        {
-            FileData *next = i->next;
-            if (i->obj != inItem)
-                prev = i;
-            else
-            {
-                if (prev == NULL)
-                    mFileData = next;
-                else
-                    prev->next = next;
-                SDL_free(i);
-            }
-            i = next;
-        }
-
+        mFileData.remove(inItem);
         if (--mNumReaders == 0) {
             mThreadShouldDie = 1;
             mGuard->Notify(); /* wake up thread so it will quit */
@@ -232,7 +202,7 @@ UInt32  FileReaderThread::GetThreadBasePriority (pthread_t inThread)
     return 0;
 }
 
-void *FileReaderThread::DiskReaderEntry (void *inRefCon)
+void *FileReaderThread::DiskReaderEntry(void *inRefCon)
 {
     FileReaderThread *frt = (FileReaderThread *)inRefCon;
     frt->ReadNextChunk();
@@ -243,13 +213,13 @@ void *FileReaderThread::DiskReaderEntry (void *inRefCon)
     return 0;
 }
 
-void    FileReaderThread::ReadNextChunk()
+void FileReaderThread::ReadNextChunk()
 {
     OSStatus result;
     ByteCount dataChunkSize;
     AudioFileManager* theItem = 0;
-
-    for (;;) 
+	
+    for (;;)
     {
         { /* this is a scoped based lock */
             int bNeedsRelease = mGuard->Lock();
@@ -261,51 +231,42 @@ void    FileReaderThread::ReadNextChunk()
                 return;
             }
             
-            /*if (frt->mFileData.empty())*/
-            if (mFileData == NULL)
+            if (mFileData.empty())
             {
                 mGuard->Wait();
             }
-                        
+			
             /* kill thread */
             if (mThreadShouldDie) {
-            
+				
                 mGuard->Notify();
                 if (bNeedsRelease)
                     mGuard->Unlock();
                 return;
             }
-
-            /*theItem = frt->mFileData.front();*/
-            /*frt->mFileData.pop_front();*/
-            theItem = NULL;
-            if (mFileData != NULL)
-            {
-                FileData *next = mFileData->next;
-                theItem = mFileData->obj;
-                SDL_free(mFileData);
-                mFileData = next;
-            }
-
+			
+            theItem = mFileData.front();
+            mFileData.pop_front();
+			
             if (bNeedsRelease)
 				mGuard->Unlock();
         }
-    
+		
         if ((theItem->mFileLength - theItem->mReadFilePosition) < theItem->mChunkSize)
             dataChunkSize = theItem->mFileLength - theItem->mReadFilePosition;
         else
             dataChunkSize = theItem->mChunkSize;
         
-            /* this is the exit condition for the thread */
+		/* this is the exit condition for the thread */
         if (dataChunkSize <= 0) {
             theItem->mFinishedReadingData = 1;
             continue;
         }
-            /* construct pointer */
+		/* construct pointer */
         char* writePtr = (char *) (theItem->GetFileBuffer() +
-                                (theItem->mWriteToFirstBuffer ? 0 : theItem->mChunkSize));
-    
-            /* read data */
+								   (theItem->mWriteToFirstBuffer ? 0 : theItem->mChunkSize));
+		
+		/* read data */
         result = theItem->Read(writePtr, &dataChunkSize);
         if (result != noErr && result != eofErr) {
             AudioFilePlayer *afp = (AudioFilePlayer *) theItem->GetParent();
@@ -316,7 +277,7 @@ void    FileReaderThread::ReadNextChunk()
         if (dataChunkSize != theItem->mChunkSize)
         {
             writePtr += dataChunkSize;
-
+			
             /* can't exit yet.. we still have to pass the partial buffer back */
             SDL_memset(writePtr, 0, (theItem->mChunkSize - dataChunkSize));
         }
@@ -332,9 +293,9 @@ void    FileReaderThread::ReadNextChunk()
 
 void delete_FileReaderThread(FileReaderThread *frt)
 {
-    if (frt != NULL) {
-        delete frt;
-    }
+	if (frt != NULL) {
+		delete frt;
+	}
 }
 
 FileReaderThread::~FileReaderThread()
@@ -351,7 +312,7 @@ FileReaderThread::FileReaderThread()
 {
     mThreadShouldDie = 0;
     mNumReaders = 0;
-    mFileData = NULL;
+    mFileData = FileData();
 
     mGuard = new SDLOSXCAGuard();
 
@@ -397,8 +358,7 @@ int AudioFileManager::DoConnect()
 
 void AudioFileManager::Disconnect()
 {
-    if (mIsEngaged)
-    {
+    if (mIsEngaged) {
         sReaderThread->RemoveReader(this);
         mIsEngaged = 0;
     }
@@ -416,32 +376,32 @@ OSStatus AudioFileManager::Read(char *buffer, ByteCount *len)
 
 OSStatus AudioFileManager::GetFileData(void** inOutData, UInt32 *inOutDataSize)
 {
-    if (mFinishedReadingData)
-    {
-        ++mNumTimesAskedSinceFinished;
-        *inOutDataSize = 0;
-        *inOutData = 0;
-        return noErr;
-    }
-    
-    if (mReadFromFirstBuffer == mWriteToFirstBuffer) {
-        #if DEBUG
-        printf ("* * * * * * * Can't keep up with reading file\n");
-        #endif
-        
-        mParent->DoNotification(kAudioFilePlayErr_FilePlayUnderrun);
-        *inOutDataSize = 0;
-        *inOutData = 0;
-    } else {
-        *inOutDataSize = mChunkSize;
-        *inOutData = mReadFromFirstBuffer ? mFileBuffer : (mFileBuffer + mChunkSize);
-    }
-
-    mLockUnsuccessful = !sReaderThread->TryNextRead(this);
-    
-    mReadFromFirstBuffer = !mReadFromFirstBuffer;
-
-    return noErr;
+	if (mFinishedReadingData)
+	{
+		++mNumTimesAskedSinceFinished;
+		*inOutDataSize = 0;
+		*inOutData = 0;
+		return noErr;
+	}
+	
+	if (mReadFromFirstBuffer == mWriteToFirstBuffer) {
+#if DEBUG
+		printf ("* * * * * * * Can't keep up with reading file\n");
+#endif
+		
+		mParent->DoNotification(kAudioFilePlayErr_FilePlayUnderrun);
+		*inOutDataSize = 0;
+		*inOutData = 0;
+	} else {
+		*inOutDataSize = mChunkSize;
+		*inOutData = mReadFromFirstBuffer ? mFileBuffer : (mFileBuffer + mChunkSize);
+	}
+	
+	mLockUnsuccessful = !sReaderThread->TryNextRead(this);
+	
+	mReadFromFirstBuffer = !mReadFromFirstBuffer;
+	
+	return noErr;
 }
 
 void AudioFileManager::AfterRender()

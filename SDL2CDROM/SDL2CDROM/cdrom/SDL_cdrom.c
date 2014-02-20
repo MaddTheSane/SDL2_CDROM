@@ -283,6 +283,8 @@ int SDL2_CDResume(SDL2_CD *cdrom)
 	switch (status) {
 		case CD_PAUSED:
 			retval = SDL_CDcaps.Resume(cdrom);
+			break;
+			
 		default:
 			retval = 0;
 			break;
@@ -305,6 +307,8 @@ int SDL2_CDStop(SDL2_CD *cdrom)
 		case CD_PLAYING:
 		case CD_PAUSED:
 			retval = SDL_CDcaps.Stop(cdrom);
+			break;
+			
 		default:
 			retval = 0;
 			break;
