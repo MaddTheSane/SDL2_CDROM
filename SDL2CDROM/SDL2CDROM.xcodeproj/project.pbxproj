@@ -399,8 +399,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_COMPATIBILITY_VERSION = 2;
+				DYLIB_CURRENT_VERSION = 2.0;
 				EXPORTED_SYMBOLS_FILE = SDL2CDROM/SDL2CDROM.exp;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -414,6 +414,7 @@
 					"SDL_CDROM_MACOSX=1",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "DEBUG_CDROM=1";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(LOCAL_LIBRARY_DIR)/Frameworks/SDL2.framework/Headers",
 					"$(inherited)",
@@ -428,8 +429,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_COMPATIBILITY_VERSION = 2;
+				DYLIB_CURRENT_VERSION = 2.0;
 				EXPORTED_SYMBOLS_FILE = SDL2CDROM/SDL2CDROM.exp;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -442,6 +443,7 @@
 					"$(inherited)",
 					"SDL_CDROM_MACOSX=1",
 				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(LOCAL_LIBRARY_DIR)/Frameworks/SDL2.framework/Headers",
 					"$(inherited)",

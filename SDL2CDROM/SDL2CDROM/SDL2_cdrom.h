@@ -25,8 +25,8 @@
  *  This is the CD-audio control API for Simple DirectMedia Layer
  */
 
-#ifndef _SDL_cdrom_h
-#define _SDL_cdrom_h
+#ifndef _SDL2_cdrom_h
+#define _SDL2_cdrom_h
 
 #include <SDL_stdinc.h>
 #include <SDL_error.h>
@@ -167,49 +167,49 @@ extern DECLSPEC CDstatus SDL2CDCALL SDL2_CDStatus(SDL2_CD *cdrom);
  *      @code
  *	// Play entire CD:
  *	if ( CD_INDRIVE(SDL2_CDStatus(cdrom)) )
- *		SDL_CDPlayTracks(cdrom, 0, 0, 0, 0);
+ *		SDL2_CDPlayTracks(cdrom, 0, 0, 0, 0);
  *	// Play last track:
  *	if ( CD_INDRIVE(SDL2_CDStatus(cdrom)) ) {
- *		SDL_CDPlayTracks(cdrom, cdrom->numtracks-1, 0, 0, 0);
+ *		SDL2_CDPlayTracks(cdrom, cdrom->numtracks-1, 0, 0, 0);
  *	}
  *	// Play first and second track and 10 seconds of third track:
  *	if ( CD_INDRIVE(SDL2_CDStatus(cdrom)) )
- *		SDL_CDPlayTracks(cdrom, 0, 0, 2, 10);
+ *		SDL2_CDPlayTracks(cdrom, 0, 0, 2, 10);
  *      @endcode
  *
  *  @return This function returns 0, or -1 if there was an error.
  */
-extern DECLSPEC int SDL2CDCALL SDL_CDPlayTracks(SDL2_CD *cdrom,
+extern DECLSPEC int SDL2CDCALL SDL2_CDPlayTracks(SDL2_CD *cdrom,
 		int start_track, int start_frame, int ntracks, int nframes);
 
 /**
  *  Play the given CD starting at 'start' frame for 'length' frames.
  *  @return It returns 0, or -1 if there was an error.
  */
-extern DECLSPEC int SDL2CDCALL SDL_CDPlay(SDL2_CD *cdrom, int start, int length);
+extern DECLSPEC int SDL2CDCALL SDL2_CDPlay(SDL2_CD *cdrom, int start, int length);
 
 /** Pause play
  *  @return returns 0, or -1 on error
  */
-extern DECLSPEC int SDL2CDCALL SDL_CDPause(SDL2_CD *cdrom);
+extern DECLSPEC int SDL2CDCALL SDL2_CDPause(SDL2_CD *cdrom);
 
 /** Resume play
  *  @return returns 0, or -1 on error
  */
-extern DECLSPEC int SDL2CDCALL SDL_CDResume(SDL2_CD *cdrom);
+extern DECLSPEC int SDL2CDCALL SDL2_CDResume(SDL2_CD *cdrom);
 
 /** Stop play
  *  @return returns 0, or -1 on error
  */
-extern DECLSPEC int SDL2CDCALL SDL_CDStop(SDL2_CD *cdrom);
+extern DECLSPEC int SDL2CDCALL SDL2_CDStop(SDL2_CD *cdrom);
 
 /** Eject CD-ROM
  *  @return returns 0, or -1 on error
  */
-extern DECLSPEC int SDL2CDCALL SDL_CDEject(SDL2_CD *cdrom);
+extern DECLSPEC int SDL2CDCALL SDL2_CDEject(SDL2_CD *cdrom);
 
 /** Closes the handle for the CD-ROM drive */
-extern DECLSPEC void SDL2CDCALL SDL_CDClose(SDL2_CD *cdrom);
+extern DECLSPEC void SDL2CDCALL SDL2_CDClose(SDL2_CD *cdrom);
 
 
 /* Ends C function definitions when using C++ */
