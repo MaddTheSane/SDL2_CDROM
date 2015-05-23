@@ -587,7 +587,7 @@ static void FilePlayNotificationHandler(void * inRefCon, OSStatus inStatus)
         SDL_SetError ("CDPlayer Notification: player is uninitialized");
     } else {
         
-        SDL_SetError ("CDPlayer Notification: unknown error %ld", inStatus);
+        SDL_SetError ("CDPlayer Notification: unknown error %d", (int)inStatus);
     }
 }
 

@@ -47,7 +47,7 @@ extern "C" {
 #endif
 
 /**
- *  @file SDL_cdrom.h
+ *  @file SDL2_cdrom.h
  *  In order to use these functions, SDL_Init() must have been called
  *  with the SDL_INIT_CDROM flag.  This causes SDL to scan the system
  *  for CD-ROM drives, and load appropriate drivers.

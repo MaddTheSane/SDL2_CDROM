@@ -479,7 +479,7 @@ OSStatus AudioFileManager::Render(AudioBufferList *ioData)
         if (mBufferOffset >= mBufferSize) {
             result = GetFileData(&mTmpBuffer, &mBufferSize);
             if (result) {
-                SDL_SetError ("AudioConverterFillBuffer:%ld\n", result);
+                SDL_SetError ("AudioConverterFillBuffer:%d\n", (int)result);
                 mParent->DoNotification(result);
                 return result;
             }

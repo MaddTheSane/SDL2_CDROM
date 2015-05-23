@@ -38,7 +38,7 @@
 		555776F817EC14650019D008 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		555776FA17EC14650019D008 /* SDL2CDROM-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SDL2CDROM-Prefix.pch"; sourceTree = "<group>"; };
 		5557770317EC14650019D008 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		5557771917EC14DD0019D008 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
+		5557771917EC14DD0019D008 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
 		5557771B17EC154F0019D008 /* SDL2_cdrom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDL2_cdrom.h; sourceTree = "<group>"; };
 		5557772117EC15920019D008 /* SDL_syscdrom.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SDL_syscdrom.cc; sourceTree = "<group>"; };
 		5557772317EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; };
@@ -271,7 +271,7 @@
 		555776E217EC14650019D008 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = "C.W. Betts";
 			};
 			buildConfigurationList = 555776E517EC14650019D008 /* Build configuration list for PBXProject "SDL2CDROM" */;

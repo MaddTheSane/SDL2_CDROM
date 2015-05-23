@@ -213,7 +213,7 @@ void AudioFilePlayer::Disconnect()
                                         &mInputCallback,
                                         sizeof(mInputCallback));
         if (result) 
-            SDL_SetError ("AudioUnitSetProperty:RemoveInputCallback:%ld", result);
+            SDL_SetError ("AudioUnitSetProperty:RemoveInputCallback:%d", (int)result);
 
         mAudioFileManager->Disconnect();
     }
