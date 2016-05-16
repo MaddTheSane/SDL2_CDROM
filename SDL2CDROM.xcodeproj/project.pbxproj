@@ -271,7 +271,7 @@
 		555776E217EC14650019D008 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = "C.W. Betts";
 			};
 			buildConfigurationList = 555776E517EC14650019D008 /* Build configuration list for PBXProject "SDL2CDROM" */;
@@ -345,6 +345,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -421,6 +422,7 @@
 				);
 				INFOPLIST_FILE = "SDL2CDROM/SDL2CDROM-Info.plist";
 				LD_DYLIB_INSTALL_NAME = "@rpath/$(EXECUTABLE_PATH)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.github.maddthesane.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = framework;
 			};
@@ -451,6 +453,7 @@
 				);
 				INFOPLIST_FILE = "SDL2CDROM/SDL2CDROM-Info.plist";
 				LD_DYLIB_INSTALL_NAME = "@rpath/$(EXECUTABLE_PATH)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.github.maddthesane.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = framework;
 			};
