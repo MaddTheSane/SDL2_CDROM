@@ -41,17 +41,17 @@ extern "C" {
 
 typedef void (*CDPlayerCompletionProc)(SDL2_CD *cdrom) ;
 
-void     Lock();
-void     Unlock();
+void     Lock(void);
+void     Unlock(void);
 int      LoadFile (const FSRef *ref, int startFrame, int endFrame); /* pass -1 to do nothing */
-int      ReleaseFile ();
-int      PlayFile();
-int      PauseFile();
+int      ReleaseFile (void);
+int      PlayFile(void);
+int      PauseFile(void);
 void     SetCompletionProc(CDPlayerCompletionProc proc, SDL2_CD *cdrom);
 int      ReadTOCData(FSVolumeRefNum theVolume, SDL2_CD *theCD);
 int      ListTrackFiles(FSVolumeRefNum theVolume, FSRef *trackFiles, int numTracks);
 int      DetectAudioCDVolumes(FSVolumeRefNum *volumes, int numVolumes);
-int      GetCurrentFrame();
+int      GetCurrentFrame(void);
 
 #ifdef __cplusplus
 };

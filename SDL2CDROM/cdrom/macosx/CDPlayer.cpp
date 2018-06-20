@@ -470,7 +470,7 @@ int PlayFile()
     
         // start processing of the audio unit
         result = AudioOutputUnitStart (theUnit);
-        if (result) THROW_RESULT("PlayFile: AudioOutputUnitStart");
+        THROW_RESULT("PlayFile: AudioOutputUnitStart");
         
     } catch (...) {
         goto bail;
@@ -493,8 +493,8 @@ int PauseFile ()
         
         /* stop processing the audio unit */
         result = AudioOutputUnitStop (theUnit);
-        if (result) THROW_RESULT("PauseFile: AudioOutputUnitStop")
-            }
+        THROW_RESULT("PauseFile: AudioOutputUnitStop")
+    }
     catch (...) {
         goto bail;
     }
@@ -553,15 +553,15 @@ static OSStatus CheckInit()
         AudioComponent comp = AudioComponentFindNext (NULL, &desc);
         if (comp == NULL) {
             SDL_SetError ("CheckInit: FindNextComponent returned NULL");
-            if (result) return -1; //throw(internalComponentErr);
+            if (result) throw(internalComponentErr);
         }
         
         result = AudioComponentInstanceNew (comp, &theUnit);
-        if (result) THROW_RESULT("CheckInit: OpenAComponent")
+        THROW_RESULT("CheckInit: OpenAComponent")
         
         // you need to initialize the output unit before you set it as a destination
         result = AudioUnitInitialize (theUnit);
-        if (result) THROW_RESULT("CheckInit: AudioUnitInitialize")
+        THROW_RESULT("CheckInit: AudioUnitInitialize")
         
         
         playBackWasInit = true;

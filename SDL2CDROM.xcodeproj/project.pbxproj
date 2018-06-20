@@ -46,10 +46,10 @@
 		5557772717EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; };
 		5557772917EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; };
 		5557772B17EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; };
-		5557773017EC15920019D008 /* AudioFilePlayer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AudioFilePlayer.cpp; sourceTree = "<group>"; usesTabs = 1; };
+		5557773017EC15920019D008 /* AudioFilePlayer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AudioFilePlayer.cpp; sourceTree = "<group>"; };
 		5557773117EC15920019D008 /* AudioFilePlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioFilePlayer.h; sourceTree = "<group>"; usesTabs = 1; };
 		5557773217EC15920019D008 /* AudioFileReaderThread.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AudioFileReaderThread.cpp; sourceTree = "<group>"; usesTabs = 1; };
-		5557773317EC15920019D008 /* CDPlayer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CDPlayer.cpp; sourceTree = "<group>"; usesTabs = 1; };
+		5557773317EC15920019D008 /* CDPlayer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CDPlayer.cpp; sourceTree = "<group>"; };
 		5557773417EC15920019D008 /* CDPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CDPlayer.h; sourceTree = "<group>"; usesTabs = 1; };
 		5557773517EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; usesTabs = 1; };
 		5557773617EC15920019D008 /* SDL_syscdrom_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDL_syscdrom_c.h; sourceTree = "<group>"; usesTabs = 1; };
@@ -84,6 +84,7 @@
 				555776EC17EC14650019D008 /* Products */,
 			);
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		555776EC17EC14650019D008 /* Products */ = {
 			isa = PBXGroup;

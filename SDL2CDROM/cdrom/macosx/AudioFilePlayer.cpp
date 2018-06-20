@@ -68,10 +68,10 @@ bool AudioFilePlayer::SetDestination (AudioUnit  *inDestUnit)
     
 
         /* we can "down" cast a component instance to a component */
-    ComponentDescription desc;
-    result = GetComponentInfo ((Component)*inDestUnit, &desc, 0, 0, 0);
+    AudioComponentDescription desc;
+    result = AudioComponentGetDescription ((AudioComponent)*inDestUnit, &desc);
     if (result) return 0; /*THROW_RESULT("GetComponentInfo")*/
-        
+    
         /* we're going to use this to know which convert routine to call
            a v1 audio unit will have a type of 'aunt'
            a v2 audio unit will have one of several different types. */
@@ -139,17 +139,17 @@ void AudioFilePlayer::SetStopFrame (int frame)
 
 AudioFilePlayer::~AudioFilePlayer()
 {
-        Disconnect();
-        
-        if (mAudioFileManager) {
-            delete mAudioFileManager;
-            mAudioFileManager = 0;
-        }
+    Disconnect();
     
-        if (mForkRefNum) {
-            FSCloseFork (mForkRefNum);
-            mForkRefNum = 0;
-        }
+    if (mAudioFileManager) {
+        delete mAudioFileManager;
+        mAudioFileManager = 0;
+    }
+    
+    if (mForkRefNum) {
+        FSCloseFork (mForkRefNum);
+        mForkRefNum = 0;
+    }
 }
 
 int AudioFilePlayer::Connect()
@@ -172,7 +172,7 @@ int AudioFilePlayer::Connect()
                             0,
                             &mInputCallback,
                             sizeof(mInputCallback));
-        if (result)  THROW_RESULT("AudioUnitSetProperty");
+        THROW_RESULT("AudioUnitSetProperty");
         mConnected = 1;
     }
 
@@ -237,23 +237,23 @@ int AudioFilePlayer::OpenFile(const FSRef *inRef, SInt64 *outFileDataSize)
 
     /* Open the data fork of the input file */
     result = FSGetDataForkName(&dfName);
-    if (result) THROW_RESULT("AudioFilePlayer::OpenFile(): FSGetDataForkName");
+    THROW_RESULT("AudioFilePlayer::OpenFile(): FSGetDataForkName");
 
     result = FSOpenFork(inRef, dfName.length, dfName.unicode, fsRdPerm, &mForkRefNum);
-    if (result) THROW_RESULT("AudioFilePlayer::OpenFile(): FSOpenFork");
+    THROW_RESULT("AudioFilePlayer::OpenFile(): FSOpenFork");
  
     /* Read the file header, and check if it's indeed an AIFC file */
     result = FSReadFork(mForkRefNum, fsAtMark, 0, sizeof(chunkHeader), &chunkHeader, &actual);
-    if (result)  THROW_RESULT("AudioFilePlayer::OpenFile(): FSReadFork");
+    THROW_RESULT("AudioFilePlayer::OpenFile(): FSReadFork");
 
     if (SDL_SwapBE32(chunkHeader.ckID) != 'FORM') {
         result = -1;
-        if (result) return 0; /*THROW_RESULT("AudioFilePlayer::OpenFile(): chunk id is not 'FORM'");*/
+        THROW_RESULT("AudioFilePlayer::OpenFile(): chunk id is not 'FORM'");
     }
 
     if (SDL_SwapBE32(chunkHeader.formType) != 'AIFC') {
         result = -1;
-        if (result) return 0; /*THROW_RESULT("AudioFilePlayer::OpenFile(): file format is not 'AIFC'");*/
+        THROW_RESULT("AudioFilePlayer::OpenFile(): file format is not 'AIFC'");
     }
 
     /* Search for the SSND chunk. We ignore all compression etc. information
@@ -276,12 +276,12 @@ int AudioFilePlayer::OpenFile(const FSRef *inRef, SInt64 *outFileDataSize)
     /* Read the header of the SSND chunk. After this, we are positioned right
        at the start of the audio data. */
     result = FSReadFork(mForkRefNum, fsAtMark, 0, sizeof(ssndData), &ssndData, &actual);
-    if (result) THROW_RESULT("AudioFilePlayer::OpenFile(): FSReadFork");
+    THROW_RESULT("AudioFilePlayer::OpenFile(): FSReadFork");
 
     ssndData.offset = SDL_SwapBE32(ssndData.offset);
 
     result = FSSetForkPosition(mForkRefNum, fsFromMark, ssndData.offset);
-    if (result) THROW_RESULT("AudioFilePlayer::OpenFile(): FSSetForkPosition");
+    THROW_RESULT("AudioFilePlayer::OpenFile(): FSSetForkPosition");
 
     /* Data size */
     *outFileDataSize = chunk.ckSize - ssndData.offset - 8;
