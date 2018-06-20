@@ -117,18 +117,18 @@ typedef struct SDL2_CD {
 /* CD-audio API functions: */
 
 /**
- *  TODO: documentation
+ *  This must be called before any other functions are called.
  */
 extern DECLSPEC int SDL2CDCALL SDL2_CD_init(void);
 
 /**
- *  TODO: documentation
+ *  Closes all SDL2-CDROMs. \c SDL2_CD_init() will need to be called again if you wish to use these functions again.
  */
 extern DECLSPEC void SDL2CDCALL SDL2_CD_close(void);
 
 /**
  *  Returns the number of CD-ROM drives on the system, or -1 if
- *  SDL_Init() has not been called with the SDL_INIT_CDROM flag.
+ *  SDL2_CD_init() has not been called.
  */
 extern DECLSPEC int SDL2CDCALL SDL2_CDNumDrives(void);
 
