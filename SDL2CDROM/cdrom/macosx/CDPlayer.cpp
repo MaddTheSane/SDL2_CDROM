@@ -542,7 +542,7 @@ static OSStatus CheckInit()
     SDL_CreateThread(RunCallBackThread, "CD Audio playback", NULL);
     
     try {
-        ComponentDescription desc;
+        AudioComponentDescription desc;
         
         desc.componentType = kAudioUnitType_Output;
         desc.componentSubType = kAudioUnitSubType_DefaultOutput;
@@ -550,13 +550,13 @@ static OSStatus CheckInit()
         desc.componentFlags = 0;
         desc.componentFlagsMask = 0;
         
-        Component comp = FindNextComponent (NULL, &desc);
+        AudioComponent comp = AudioComponentFindNext (NULL, &desc);
         if (comp == NULL) {
             SDL_SetError ("CheckInit: FindNextComponent returned NULL");
             if (result) return -1; //throw(internalComponentErr);
         }
         
-        result = OpenAComponent (comp, &theUnit);
+        result = AudioComponentInstanceNew (comp, &theUnit);
         if (result) THROW_RESULT("CheckInit: OpenAComponent")
         
         // you need to initialize the output unit before you set it as a destination
