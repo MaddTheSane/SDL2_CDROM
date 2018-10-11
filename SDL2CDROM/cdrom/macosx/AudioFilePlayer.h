@@ -71,7 +71,7 @@ public:
     void            SetStartFrame(int frame); /* seek in the file */
     int             GetCurrentFrame(); /* get the current frame position */
     void            SetStopFrame(int frame);   /* set limit in the file */
-    int             Connect();
+    bool            Connect();
     void            Disconnect();
     void            DoNotification(OSStatus inError);
     bool            IsConnected();

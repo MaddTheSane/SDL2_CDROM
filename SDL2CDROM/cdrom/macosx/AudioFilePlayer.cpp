@@ -77,7 +77,7 @@ bool AudioFilePlayer::SetDestination (AudioUnit  *inDestUnit)
            a v2 audio unit will have one of several different types. */
     if (desc.componentType != kAudioUnitType_Output) {
         result = badComponentInstance;
-        /*THROW_RESULT("BAD COMPONENT")*/
+        THROW_RESULT("BAD COMPONENT")
         if (result) return 0;
     }
 
@@ -88,9 +88,9 @@ bool AudioFilePlayer::SetDestination (AudioUnit  *inDestUnit)
                                0,
                                &mFileDescription,
                                sizeof (mFileDescription));
-        /*THROW_RESULT("AudioUnitSetProperty")*/
-    if (result) return 0;
-    return 1;
+        THROW_RESULT("AudioUnitSetProperty")
+    if (result) return false;
+    return true;
 }
 
 void AudioFilePlayer::SetNotifier(AudioFilePlayNotifier inNotifier, void *inRefCon)
@@ -143,7 +143,7 @@ AudioFilePlayer::~AudioFilePlayer()
     
     if (mAudioFileManager) {
         delete mAudioFileManager;
-        mAudioFileManager = 0;
+        mAudioFileManager = NULL;
     }
     
     if (mForkRefNum) {
@@ -152,7 +152,7 @@ AudioFilePlayer::~AudioFilePlayer()
     }
 }
 
-int AudioFilePlayer::Connect()
+bool AudioFilePlayer::Connect()
 {
 #if DEBUG
     printf ("Connect:%lx, engaged=%d\n", (long)mPlayUnit, (mConnected ? 1 : 0));
@@ -160,7 +160,7 @@ int AudioFilePlayer::Connect()
     if (!mConnected)
     {           
         if (!mAudioFileManager->DoConnect())
-            return 0;
+            return false;
 
         /* set the render callback for the file data to be supplied to the sound converter AU */
         mInputCallback.inputProc = mAudioFileManager->FileInputProc;
@@ -176,7 +176,7 @@ int AudioFilePlayer::Connect()
         mConnected = 1;
     }
 
-    return 1;
+    return true;
 }
 
 /* warning noted, now please go away ;-) */
@@ -302,7 +302,7 @@ int AudioFilePlayer::OpenFile(const FSRef *inRef, SInt64 *outFileDataSize)
 AudioFilePlayer::AudioFilePlayer(const FSRef *inFileRef)
 {
     SInt64 fileDataSize  = 0;
-    
+
     mPlayUnit = NULL;
     mForkRefNum = 0;
     memset(&mInputCallback, 0, sizeof(mInputCallback));
@@ -313,7 +313,7 @@ AudioFilePlayer::AudioFilePlayer(const FSRef *inFileRef)
     mNotifier = NULL;
     mRefCon = NULL;
     mStartFrame = 0;
-    
+
     if (!OpenFile (inFileRef, &fileDataSize))
     {
         throw;
@@ -330,10 +330,10 @@ AudioFilePlayer::AudioFilePlayer(const FSRef *inFileRef)
     mAudioFileManager = new AudioFileManager(this, mForkRefNum,
                                              fileDataSize,
                                              bytesPerSecond);
-    
     if (mAudioFileManager == NULL)
     {
         delete this;
+        throw;
         return;
     }
 }
