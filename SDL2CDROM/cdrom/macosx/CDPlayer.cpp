@@ -129,19 +129,15 @@ int DetectAudioCDVolumes(FSVolumeRefNum *volumes, int numVolumes)
 
 int ReadTOCData(FSVolumeRefNum theVolume, SDL2_CD *theCD)
 {
-    HFSUniStr255		dataForkName;
     OSStatus			theErr;
-    FSIORefNum			forkRefNum = 0;
-    SInt64				forkSize;
-    Ptr					forkData = 0;
-    ByteCount			actualRead;
-    CFDataRef			dataRef = 0;
+    CFURLRef            rootURL = NULL;
+    CFURLRef            tocURL = NULL;
+    CFMutableDataRef    mutDataRef = NULL;
     CFPropertyListRef	propertyListRef = 0;
-    FSRefParam			fsRefPB;
-    FSRef				tocPlistFSRef;
     FSRef				rootRef;
+    CFReadStreamRef     readStream;
+    CFStreamStatus      streamStatus;
     const char* error = "Unspecified Error";
-    const UniChar uniName[] = { '.','T','O','C','.','p','l','i','s','t' };
 
     theErr = FSGetVolumeInfo(theVolume, 0, 0, kFSVolInfoNone, 0, 0, &rootRef);
     if(theErr != noErr) {
@@ -149,62 +145,72 @@ int ReadTOCData(FSVolumeRefNum theVolume, SDL2_CD *theCD)
         goto bail;
     }
 
-    SDL_memset(&fsRefPB, '\0', sizeof (fsRefPB));
+    rootURL = CFURLCreateFromFSRef(kCFAllocatorDefault, &rootRef);
+    if (!rootURL) {
+        error = "CFURLCreateFromFSRef";
+        goto bail;
+    }
 
     /* get stuff from .TOC.plist */
-    fsRefPB.ref = &rootRef;
-    fsRefPB.newRef = &tocPlistFSRef;
-    fsRefPB.nameLength = sizeof (uniName) / sizeof (uniName[0]);
-    fsRefPB.name = uniName;
-    fsRefPB.textEncodingHint = kTextEncodingUnknown;
-
-    theErr = PBMakeFSRefUnicodeSync (&fsRefPB);
-    if(theErr != noErr) {
-        error = "PBMakeFSRefUnicodeSync";
+    tocURL = CFURLCreateCopyAppendingPathComponent(kCFAllocatorDefault, rootURL, CFSTR(".TOC.plist"), FALSE);
+    CFRelease(rootURL); rootURL = NULL;
+    if (!tocURL) {
+        error = "CFURLCreateCopyAppendingPathComponent";
         goto bail;
     }
     
     /* Load and parse the TOC XML data */
 
-    theErr = FSGetDataForkName (&dataForkName);
-    if (theErr != noErr) {
-        error = "FSGetDataForkName";
+    readStream = CFReadStreamCreateWithFile(kCFAllocatorDefault, tocURL);
+    CFRelease(tocURL); tocURL = NULL;
+    if (!tocURL) {
+        error = "CFReadStreamCreateWithFile";
         goto bail;
     }
     
-    theErr = FSOpenFork (&tocPlistFSRef, dataForkName.length, dataForkName.unicode, fsRdPerm, &forkRefNum);
-    if (theErr != noErr) {
-        error = "FSOpenFork";
+    CFReadStreamOpen(readStream);
+    streamStatus = CFReadStreamGetStatus(readStream);
+    if (streamStatus == kCFStreamStatusError) {
+        CFRelease(readStream);
+        theErr = (OSStatus)streamStatus;
+        error = "CFReadStreamOpen";
         goto bail;
+    } else if (streamStatus == kCFStreamStatusOpening) {
+        while (streamStatus == kCFStreamStatusOpening) {
+            usleep(500);
+            streamStatus = CFReadStreamGetStatus(readStream);
+        }
     }
-    
-    theErr = FSGetForkSize (forkRefNum, &forkSize);
-    if (theErr != noErr) {
-        error = "FSGetForkSize";
+    if (streamStatus != kCFStreamStatusOpen) {
+        CFRelease(readStream);
+        theErr = (OSStatus)streamStatus;
+        error = "CFReadStreamOpen";
         goto bail;
     }
     
     /* Allocate some memory for the XML data */
-    forkData = NewPtr(forkSize);
-    if(forkData == NULL) {
-        error = "NewPtr";
-        goto bail;
-    }
-    
-    theErr = FSReadFork (forkRefNum, fsFromStart, 0 /* offset location */, forkSize, forkData, &actualRead);
-    if(theErr != noErr) {
-        error = "FSReadFork";
-        goto bail;
-    }
-    
-    dataRef = CFDataCreate (kCFAllocatorDefault, (UInt8 *)forkData, forkSize);
-    if(dataRef == 0) {
-        error = "CFDataCreate";
+    mutDataRef = CFDataCreateMutable(kCFAllocatorDefault, 2 * 1024 * 1024 /* 2 MiB, should be big enough */);
+    if (!mutDataRef) {
+        error = "CFDataCreateMutable";
         goto bail;
     }
 
+    do {
+        UInt8 *data = new UInt8[4096];
+        CFIndex readBytes = CFReadStreamRead(readStream, data, 4096);
+        CFDataAppendBytes(mutDataRef, data, readBytes);
+        delete [] data;
+    } while (CFReadStreamHasBytesAvailable(readStream));
+    streamStatus = CFReadStreamGetStatus(readStream);
+    CFRelease(readStream); readStream = NULL;
+    if (streamStatus == kCFStreamStatusError) {
+        theErr = (OSStatus)streamStatus;
+        error = "CFReadStreamRead";
+        goto bail;
+    }
+    
     propertyListRef = CFPropertyListCreateFromXMLData (kCFAllocatorDefault,
-                                                       dataRef,
+                                                       mutDataRef,
                                                        kCFPropertyListImmutable,
                                                        NULL);
     if (propertyListRef == NULL) {
@@ -305,12 +311,8 @@ cleanup:
 
     if (propertyListRef != NULL)
         CFRelease(propertyListRef);
-    if (dataRef != NULL)
-        CFRelease(dataRef);
-    if (forkData != NULL)
-        DisposePtr(forkData);
-        
-    FSCloseFork (forkRefNum);
+    if (mutDataRef != NULL)
+        CFRelease(mutDataRef);
 
     return theErr;
 }
