@@ -76,6 +76,7 @@
 #include <CoreAudio/CoreAudioTypes.h>
 #include <pthread.h>
 
+#ifdef __cplusplus
 
 /*=============================================================================
     CAGuard
@@ -110,7 +111,6 @@ protected:
     pthread_t		mOwner;
 };
 
-#ifdef __cplusplus
 extern "C" {
 #endif
 
