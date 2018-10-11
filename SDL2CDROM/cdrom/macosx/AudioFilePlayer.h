@@ -53,11 +53,14 @@ void ThrowResult (OSStatus result, const char *str);
 typedef void (*AudioFilePlayNotifier)(void          *inRefCon,
                                       OSStatus      inStatus);
 
-enum {
+CF_ENUM(OSStatus) {
     kAudioFilePlayErr_FilePlayUnderrun = -10000,
     kAudioFilePlay_FileIsFinished = -10001,
     kAudioFilePlay_PlayerIsUninitialized = -10002
 };
+#if 0
+}
+#endif
 
 
 class AudioFileManager;

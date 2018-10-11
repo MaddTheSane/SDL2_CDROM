@@ -25,9 +25,6 @@
 #include "AudioFilePlayer.h"
 #include "SDLOSXCAGuard.h"
 
-/* we're exporting these functions into C land for SDL_syscdrom.c */
-/*extern "C" {*/
-
 /*///////////////////////////////////////////////////////////////////////////
     Constants
   //////////////////////////////////////////////////////////////////////////*/
@@ -78,12 +75,12 @@ void Lock()
     if (!apiMutex) {
         apiMutex = SDL_CreateMutex();
     }
-    SDL_mutexP(apiMutex);
+    SDL_LockMutex(apiMutex);
 }
 
 void Unlock()
 {
-    SDL_mutexV(apiMutex);
+    SDL_UnlockMutex(apiMutex);
 }
 
 int DetectAudioCDVolumes(FSVolumeRefNum *volumes, int numVolumes)
@@ -618,5 +615,3 @@ static int RunCallBackThread (void *param)
     
     return 0;
 }
-
-/*}; // extern "C" */
