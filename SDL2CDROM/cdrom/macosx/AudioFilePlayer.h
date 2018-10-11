@@ -37,7 +37,7 @@
 #include <AudioUnit/AUNTComponent.h>
 #endif
 
-#include "SDL_error.h"
+#include <SDL_error.h>
 
 const char* AudioFilePlayerErrorStr (OSStatus error);
 
@@ -114,18 +114,18 @@ public:
     OSStatus            Read(char *buffer, ByteCount *len);
     const char*         GetFileBuffer();
     const AudioFilePlayer *GetParent();
-    void                SetPosition(SInt64 pos);  /* seek/rewind in the file */
-    int                 GetByteCounter();  /* return actual bytes streamed to audio hardware */
-    void                SetEndOfFile(SInt64 pos);  /* set the "EOF" (will behave just like it reached eof) */
+    void                SetPosition(SInt64 pos);  /*!< seek/rewind in the file */
+    int                 GetByteCounter();  /*!< return actual bytes streamed to audio hardware */
+    void                SetEndOfFile(SInt64 pos);  /*!< set the "EOF" (will behave just like it reached eof) */
     AudioFileManager(AudioFilePlayer *inParent,
-                     SInt16          inForkRefNum,
+                     FSIORefNum      inForkRefNum,
                      SInt64          inFileLength,
                      UInt32          inChunkSize);
     ~AudioFileManager();
     
 protected:
     AudioFilePlayer*    mParent;
-    SInt16              mForkRefNum;
+    FSIORefNum          mForkRefNum;
     SInt64              mAudioDataOffset;
     
     char*               mFileBuffer;

@@ -48,8 +48,8 @@ extern "C" {
 
 /**
  *  @file SDL2_cdrom.h
- *  In order to use these functions, SDL_Init() must have been called
- *  with the SDL_INIT_CDROM flag.  This causes SDL to scan the system
+ *  In order to use these functions, SDL2_CD_init() must have been called.
+ *  This causes SDL to scan the system
  *  for CD-ROM drives, and load appropriate drivers.
  */
 
@@ -65,7 +65,7 @@ extern "C" {
 /*@}*/
 
 /** The possible states which a CD-ROM drive can be in. */
-typedef enum {
+typedef enum CDstatus {
 	CD_TRAYEMPTY,
 	CD_STOPPED,
 	CD_PLAYING,

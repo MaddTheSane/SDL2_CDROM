@@ -504,7 +504,7 @@ AudioFileManager::~AudioFileManager()
 }
 
 AudioFileManager::AudioFileManager(AudioFilePlayer *inParent,
-                                   SInt16          inForkRefNum,
+                                   FSIORefNum      inForkRefNum,
                                    SInt64          inFileLength,
                                    UInt32          inChunkSize)
 {
