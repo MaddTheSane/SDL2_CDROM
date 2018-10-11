@@ -137,6 +137,7 @@ int ReadTOCData(FSVolumeRefNum theVolume, SDL2_CD *theCD)
     FSRef				rootRef;
     CFReadStreamRef     readStream;
     CFStreamStatus      streamStatus;
+    UInt8               *data;
     const char* error = "Unspecified Error";
 
     theErr = FSGetVolumeInfo(theVolume, 0, 0, kFSVolInfoNone, 0, 0, &rootRef);
@@ -195,12 +196,12 @@ int ReadTOCData(FSVolumeRefNum theVolume, SDL2_CD *theCD)
         goto bail;
     }
 
+    data = new UInt8[4096];
     do {
-        UInt8 *data = new UInt8[4096];
         CFIndex readBytes = CFReadStreamRead(readStream, data, 4096);
         CFDataAppendBytes(mutDataRef, data, readBytes);
-        delete [] data;
     } while (CFReadStreamHasBytesAvailable(readStream));
+    delete [] data;
     streamStatus = CFReadStreamGetStatus(readStream);
     CFRelease(readStream); readStream = NULL;
     if (streamStatus == kCFStreamStatusError) {
