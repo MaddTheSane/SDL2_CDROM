@@ -79,6 +79,7 @@ public:
     void            Print();
     ~AudioFilePlayer();
     AudioFilePlayer(const FSRef *inFileRef);
+	AudioFilePlayer(CFURLRef inFileURL);
 
 private:
     AudioUnit                       mPlayUnit;
@@ -100,6 +101,7 @@ private:
 #pragma mark __________ Private_Methods
     
     int          OpenFile(const FSRef *inRef, SInt64 *outFileSize);
+	bool          OpenFile(CFURLRef inURL, ssize_t *outFileSize);
 };
 
 

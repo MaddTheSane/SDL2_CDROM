@@ -299,6 +299,83 @@ int AudioFilePlayer::OpenFile(const FSRef *inRef, SInt64 *outFileDataSize)
     return 1;
 }
 
+bool AudioFilePlayer::OpenFile(CFURLRef inURL, ssize_t *outFileDataSize)
+{
+    ContainerChunk chunkHeader;
+    ChunkHeader chunk;
+    SSNDData ssndData;
+    
+    OSErr result;
+    char dfName[PATH_MAX];
+    ByteCount actual;
+    SInt64 offset;
+    
+    /* Open the data fork of the input file */
+    result = CFURLGetFileSystemRepresentation(inURL, TRUE, (UInt8*)(dfName), sizeof(dfName)) ? noErr : fnfErr;
+    THROW_RESULT("AudioFilePlayer::OpenFile(): CFURLGetFileSystemRepresentation");
+    
+    mForkRefNum = open(dfName, O_RDONLY);
+    result = mForkRefNum == -1 ? fnOpnErr : noErr;
+    THROW_RESULT("AudioFilePlayer::OpenFile(): open");
+    
+    /* Read the file header, and check if it's indeed an AIFC file */
+    actual = read(mForkRefNum, &chunkHeader, sizeof(chunkHeader));
+    THROW_RESULT("AudioFilePlayer::OpenFile(): FSReadFork");
+    
+    if (SDL_SwapBE32(chunkHeader.ckID) != 'FORM') {
+        result = -1;
+        THROW_RESULT("AudioFilePlayer::OpenFile(): chunk id is not 'FORM'");
+    }
+    
+    if (SDL_SwapBE32(chunkHeader.formType) != 'AIFC') {
+        result = -1;
+        THROW_RESULT("AudioFilePlayer::OpenFile(): file format is not 'AIFC'");
+    }
+    
+    /* Search for the SSND chunk. We ignore all compression etc. information
+     in other chunks. Of course that is kind of evil, but for now we are lazy
+     and rely on the cdfs to always give us the same fixed format.
+     TODO: Parse the COMM chunk we currently skip to fill in mFileDescription.
+     */
+    offset = 0;
+    do {
+        lseek(mForkRefNum, offset, SEEK_CUR);
+        actual = read(mForkRefNum, &chunk, sizeof(chunk));
+        if (result) THROW_RESULT("AudioFilePlayer::OpenFile(): read");
+        
+        chunk.ckID = SDL_SwapBE32(chunk.ckID);
+        chunk.ckSize = SDL_SwapBE32(chunk.ckSize);
+        
+        /* Skip the chunk data */
+        offset = chunk.ckSize;
+    } while (chunk.ckID != 'SSND');
+    
+    /* Read the header of the SSND chunk. After this, we are positioned right
+     at the start of the audio data. */
+    actual = read(mForkRefNum, &ssndData, sizeof(ssndData));
+    THROW_RESULT("AudioFilePlayer::OpenFile(): read");
+    
+    ssndData.offset = SDL_SwapBE32(ssndData.offset);
+    
+    lseek(mForkRefNum, ssndData.offset, SEEK_CUR);
+    THROW_RESULT("AudioFilePlayer::OpenFile(): lseek");
+    
+    /* Data size */
+    *outFileDataSize = chunk.ckSize - ssndData.offset - 8;
+    
+    /* File format */
+    mFileDescription.mSampleRate = 44100;
+    mFileDescription.mFormatID = kAudioFormatLinearPCM;
+    mFileDescription.mFormatFlags = kLinearPCMFormatFlagIsPacked | kLinearPCMFormatFlagIsSignedInteger;
+    mFileDescription.mBytesPerPacket = 4;
+    mFileDescription.mFramesPerPacket = 1;
+    mFileDescription.mBytesPerFrame = 4;
+    mFileDescription.mChannelsPerFrame = 2;
+    mFileDescription.mBitsPerChannel = 16;
+    
+    return true;
+}
+
 AudioFilePlayer::AudioFilePlayer(const FSRef *inFileRef)
 {
     SInt64 fileDataSize  = 0;
@@ -337,4 +414,44 @@ AudioFilePlayer::AudioFilePlayer(const FSRef *inFileRef)
         return;
     }
 }
+
+AudioFilePlayer::AudioFilePlayer(CFURLRef inFileURL)
+{
+    ssize_t fileDataSize  = 0;
+    
+    mPlayUnit = NULL;
+    mForkRefNum = 0;
+    memset(&mInputCallback, 0, sizeof(mInputCallback));
+    memset(&mInputCallback, 0, sizeof(mInputCallback));
+    memset(&mFileDescription, 0, sizeof(mFileDescription));
+    mConnected = 0;
+    mAudioFileManager = NULL;
+    mNotifier = NULL;
+    mRefCon = NULL;
+    mStartFrame = 0;
+    
+    if (!OpenFile (inFileURL, &fileDataSize))
+    {
+        throw;
+    }
+    
+    /* we want about 4 seconds worth of data for the buffer */
+    int bytesPerSecond = (UInt32) (4 * mFileDescription.mSampleRate * mFileDescription.mBytesPerFrame);
+    
+#if DEBUG
+    printf("File format:\n");
+    PrintStreamDesc (&mFileDescription);
+#endif
+    
+    mAudioFileManager = new AudioFileManager(this, mForkRefNum,
+                                             fileDataSize,
+                                             bytesPerSecond);
+    if (mAudioFileManager == NULL)
+    {
+        delete this;
+        throw;
+        return;
+    }
+}
+
 
