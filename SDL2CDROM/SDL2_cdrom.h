@@ -28,10 +28,10 @@
 #ifndef _SDL2_cdrom_h
 #define _SDL2_cdrom_h
 
-#include <SDL_stdinc.h>
-#include <SDL_error.h>
+#include "SDL_stdinc.h"
+#include "SDL_error.h"
 
-#include <begin_code.h>
+#include "begin_code.h"
 
 #ifndef SDL2CDCALL
 #if defined(__WIN32__) && !defined(__GNUC__)
@@ -216,6 +216,6 @@ extern DECLSPEC void SDL2CDCALL SDL2_CDClose(SDL2_CD *cdrom);
 #ifdef __cplusplus
 }
 #endif
-#include <close_code.h>
+#include "close_code.h"
 
 #endif /* _SDL_video_h */

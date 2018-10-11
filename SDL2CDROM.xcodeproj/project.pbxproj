@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		5530781B18B30F1D009714A4 /* SDL2CDROM.h in Headers */ = {isa = PBXBuildFile; fileRef = 5530781A18B30F1C009714A4 /* SDL2CDROM.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		555776EF17EC14650019D008 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 555776EE17EC14650019D008 /* Cocoa.framework */; };
 		555776F917EC14650019D008 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 555776F717EC14650019D008 /* InfoPlist.strings */; };
 		5557771A17EC14DD0019D008 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5557771917EC14DD0019D008 /* SDL2.framework */; };
 		5557771C17EC154F0019D008 /* SDL2_cdrom.h in Headers */ = {isa = PBXBuildFile; fileRef = 5557771B17EC154F0019D008 /* SDL2_cdrom.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -24,6 +23,8 @@
 		5557775017EC15B60019D008 /* SDLOSXCAGuard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5557773717EC15920019D008 /* SDLOSXCAGuard.cpp */; };
 		5557775117EC15B60019D008 /* SDLOSXCAGuard.h in Headers */ = {isa = PBXBuildFile; fileRef = 5557773817EC15920019D008 /* SDLOSXCAGuard.h */; };
 		5557775317EC17830019D008 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5557775217EC17830019D008 /* AudioUnit.framework */; };
+		55BA4ADD216FE68200C0172A /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55BA4ADC216FE68200C0172A /* CoreFoundation.framework */; };
+		55BA4ADF216FE68700C0172A /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55BA4ADE216FE68700C0172A /* CoreServices.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +61,8 @@
 		5557774417EC15920019D008 /* SDL_syscdrom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDL_syscdrom.h; sourceTree = "<group>"; };
 		5557774617EC15920019D008 /* SDL_syscdrom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SDL_syscdrom.c; sourceTree = "<group>"; };
 		5557775217EC17830019D008 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
+		55BA4ADC216FE68200C0172A /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		55BA4ADE216FE68700C0172A /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,7 +72,8 @@
 			files = (
 				5557775317EC17830019D008 /* AudioUnit.framework in Frameworks */,
 				5557771A17EC14DD0019D008 /* SDL2.framework in Frameworks */,
-				555776EF17EC14650019D008 /* Cocoa.framework in Frameworks */,
+				55BA4ADF216FE68700C0172A /* CoreServices.framework in Frameworks */,
+				55BA4ADD216FE68200C0172A /* CoreFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,6 +101,8 @@
 		555776ED17EC14650019D008 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				55BA4ADE216FE68700C0172A /* CoreServices.framework */,
+				55BA4ADC216FE68200C0172A /* CoreFoundation.framework */,
 				5557775217EC17830019D008 /* AudioUnit.framework */,
 				5557771917EC14DD0019D008 /* SDL2.framework */,
 				555776EE17EC14650019D008 /* Cocoa.framework */,
@@ -256,6 +262,7 @@
 				555776E717EC14650019D008 /* Frameworks */,
 				555776E817EC14650019D008 /* Headers */,
 				555776E917EC14650019D008 /* Resources */,
+				55BA4ADB216FE5F200C0172A /* Convert SDL includes to SDL Framework includes */,
 			);
 			buildRules = (
 			);
@@ -302,6 +309,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		55BA4ADB216FE5F200C0172A /* Convert SDL includes to SDL Framework includes */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Convert SDL includes to SDL Framework includes";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd $SYMROOT/$CONFIGURATION/$PUBLIC_HEADERS_FOLDER_PATH\nHEADER=SDL2_cdrom.h\nsed 's,#include \"\\(.*\\)\",#include <SDL2/\\1>,' <$HEADER >$HEADER.new\nmv $HEADER.new $HEADER\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		555776E617EC14650019D008 /* Sources */ = {
